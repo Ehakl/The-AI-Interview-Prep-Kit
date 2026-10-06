@@ -177,6 +177,28 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 export function KitProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(kitReducer, initialState);
 
+  // Load from local storage on mount
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem("trao_prep_kit");
+      if (saved) {
+        dispatch({ type: "GENERATION_SUCCESS", payload: JSON.parse(saved) });
+      }
+    } catch (e) {
+      console.error("Failed to parse saved kit", e);
+    }
+  }, []);
+
+  // Save to local storage on change
+  React.useEffect(() => {
+    if (state.kit) {
+      localStorage.setItem("trao_prep_kit", JSON.stringify(state.kit));
+    } else if (!state.isGenerating) {
+      // Only remove if we explicitly reset, not during generation
+      localStorage.removeItem("trao_prep_kit");
+    }
+  }, [state.kit, state.isGenerating]);
+
   const generateKit = useCallback(async (jd: string, companyUrl: string, days: number) => {
     dispatch({ type: "GENERATION_START" });
     try {
