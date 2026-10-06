@@ -40,40 +40,43 @@ function KitDashboard() {
 
   return (
     <div className="min-h-screen flex flex-col animate-fade-in">
-      {/* Top Nav */}
-      <header className="bg-[var(--color-background)]/95 backdrop-blur-md border-b border-white/10 sticky top-0 z-40 px-4 lg:px-8 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <button onClick={() => dispatch({ type: "RESET" })} className="text-gray-400 hover:text-white transition-colors" aria-label="Back to home">
-              ← 
-            </button>
-            <div>
-              <h1 className="font-bold text-white text-sm lg:text-base">{kit.role.title}</h1>
-              <p className="text-xs text-gray-500">{kit.source.company}</p>
+      {/* Sticky Header Group */}
+      <div className="sticky top-0 z-40 bg-[#0f1117]/95 backdrop-blur-md flex flex-col shadow-xl">
+        {/* Top Nav */}
+        <header className="border-b border-white/10 px-4 lg:px-8 py-4">
+          <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <button onClick={() => dispatch({ type: "RESET" })} className="text-gray-400 hover:text-white transition-colors" aria-label="Back to home">
+                ← 
+              </button>
+              <div>
+                <h1 className="font-bold text-white text-sm lg:text-base">{kit.role.title}</h1>
+                <p className="text-xs text-gray-500">{kit.source.company}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className={`text-xs px-2 py-1 rounded-full border ${kit.coverage.uncovered_requirement_ids.length === 0 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-amber-500/10 border-amber-500/30 text-amber-400"}`}>
+                {kit.coverage.uncovered_requirement_ids.length === 0 ? "✓ All must-haves covered" : `⚠ ${kit.coverage.uncovered_requirement_ids.length} ${kit.coverage.uncovered_requirement_ids.length === 1 ? 'gap' : 'gaps'}`}
+              </span>
+              <span className="text-xs text-gray-500 hidden md:inline">{kit.schedule.days_available}d plan · {kit.questions.length}q · {kit.flashcards.length} cards</span>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className={`text-xs px-2 py-1 rounded-full border ${kit.coverage.uncovered_requirement_ids.length === 0 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-amber-500/10 border-amber-500/30 text-amber-400"}`}>
-              {kit.coverage.uncovered_requirement_ids.length === 0 ? "✓ All must-haves covered" : `⚠ ${kit.coverage.uncovered_requirement_ids.length} ${kit.coverage.uncovered_requirement_ids.length === 1 ? 'gap' : 'gaps'}`}
-            </span>
-            <span className="text-xs text-gray-500 hidden md:inline">{kit.schedule.days_available}d plan · {kit.questions.length}q · {kit.flashcards.length} cards</span>
-          </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Tab Bar */}
-      <div className="glass-panel border-b border-white/5 px-4 lg:px-8">
-        <div className="max-w-6xl mx-auto flex overflow-x-auto hide-scrollbar gap-1">
-          {tabs.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all duration-200 ${activeTab === tab.id ? "border-indigo-500 text-indigo-400" : "border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-600"}`}
-            >
-              <span>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          ))}
+        {/* Tab Bar */}
+        <div className="border-b border-white/5 px-4 lg:px-8">
+          <div className="max-w-6xl mx-auto flex overflow-x-auto hide-scrollbar gap-1">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-all duration-200 ${activeTab === tab.id ? "border-indigo-500 text-indigo-400" : "border-transparent text-gray-400 hover:text-gray-200 hover:border-gray-600"}`}
+              >
+                <span>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
