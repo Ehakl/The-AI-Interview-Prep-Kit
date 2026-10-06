@@ -19,7 +19,7 @@ class LLMService {
     if (this.apiKey) {
         this.ai = new GoogleGenAI({ apiKey: this.apiKey });
     }
-    this.model = 'gemini-1.5-flash-8b';
+    this.model = 'gemini-3.8-flash';
   }
 
   // Built-in request back-off for Rate Limiting Resilience (429)
@@ -44,9 +44,9 @@ class LLMService {
         
         return JSON.parse(response.text);
       } catch (error) {
-        if (error.status === 429 || error.status === 503 || error.message.includes('429') || error.message.includes('503')) {
+        if (error.status === 429 || error.status === 503 || (error.message && (error.message.includes('429') || error.message.includes('503')))) {
           console.warn(`[LLMService] API Overloaded. Retrying attempt ${attempt}/${retries}...`);
-          if (attempt === retries) throw new Error("Google's servers are currently overloaded due to high demand. Please wait a minute and try again.");
+          if (attempt === retries) throw new Error(`Google API Error: ${error.message}`);
           await new Promise(resolve => setTimeout(resolve, attempt * 4000));
         } else {
           console.error(`[LLMService] LLM Call Failed: ${error.message}`);
