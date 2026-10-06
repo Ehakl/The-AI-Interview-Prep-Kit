@@ -20,26 +20,47 @@ function FlashcardItem({ card }: { card: Flashcard }) {
   };
 
   return (
-    <div className={`glass-panel rounded-xl overflow-hidden border ${card.is_user_added ? "border-purple-500/30" : "border-white/10"} animate-fade-in`}>
+    <div className={`glass-panel rounded-xl overflow-hidden border ${card.is_user_added ? "border-purple-500/30" : "border-white/10"} animate-fade-in perspective-[1000px] h-[250px]`}>
       <div
-        className="p-5 cursor-pointer hover:bg-white/5 transition-colors duration-200 min-h-[100px] flex flex-col justify-between"
+        className={`relative w-full h-full transition-transform duration-500 transform-style-3d cursor-pointer ${flipped ? 'rotate-y-180' : ''}`}
         onClick={() => setFlipped(f => !f)}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === "Enter" || e.key === " " ? setFlipped(f => !f) : null}
         aria-label={flipped ? "Click to see question" : "Click to reveal answer"}
       >
-        <div className="flex justify-between items-start gap-2">
-          <span className={`text-xs px-2 py-0.5 rounded-full border ${conf.bg} ${conf.color} font-medium`}>
-            <span className={`inline-block w-1.5 h-1.5 rounded-full ${conf.dot} mr-1`} />
-            {conf.label}
-          </span>
-          <span className="text-xs text-gray-600">{flipped ? "Answer" : "Question"} · tap to flip</span>
+        {/* Front */}
+        <div className="absolute inset-0 p-6 backface-hidden flex flex-col justify-between hover:bg-white/[0.03]">
+          <div className="flex justify-between items-start gap-2">
+            <span className={`text-[10px] uppercase tracking-wider px-2 py-1 rounded border ${conf.bg} ${conf.color} font-bold flex items-center shadow-sm`}>
+              <span className={`inline-block w-1.5 h-1.5 rounded-full ${conf.dot} mr-1.5 animate-pulse`} />
+              {conf.label}
+            </span>
+            <span className="text-[10px] font-semibold tracking-wider text-gray-500 uppercase bg-black/20 px-2 py-1 rounded">Question</span>
+          </div>
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-[17px] leading-relaxed font-semibold text-white/95 text-center px-2">
+              {card.front}
+            </p>
+          </div>
+          <div className="text-center">
+            <span className="text-[10px] text-gray-500 font-medium uppercase tracking-widest opacity-60">Tap to flip</span>
+          </div>
         </div>
-        <p className="text-sm leading-relaxed mt-3 font-medium text-white/90">
-          {flipped ? card.back : card.front}
-        </p>
+
+        {/* Back */}
+        <div className="absolute inset-0 p-6 backface-hidden rotate-y-180 flex flex-col justify-between bg-indigo-900/10 hover:bg-indigo-900/20">
+          <div className="flex justify-between items-start gap-2">
+            <span className="text-[10px] font-semibold tracking-wider text-indigo-400 uppercase bg-indigo-500/10 px-2 py-1 rounded border border-indigo-500/20">Answer</span>
+          </div>
+          <div className="flex-1 flex items-center justify-center overflow-y-auto hide-scrollbar py-2">
+            <p className="text-[15px] leading-relaxed font-medium text-gray-200 text-center px-2">
+              {card.back}
+            </p>
+          </div>
+        </div>
       </div>
+
 
       {/* Confidence scoring */}
       {flipped && (

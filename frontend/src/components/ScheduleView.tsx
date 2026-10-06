@@ -12,6 +12,7 @@ function DifficultyBadge({ level }: { level: 1 | 2 | 3 }) {
 export default function ScheduleView({ setActiveTab }: { setActiveTab?: (tab: any) => void }) {
   const { state } = useKit();
   const [expandedDay, setExpandedDay] = useState<number | null>(null);
+  const [expandedQuestion, setExpandedQuestion] = useState<string | null>(null);
   const { kit } = state;
   if (!kit) return null;
 
@@ -35,6 +36,10 @@ export default function ScheduleView({ setActiveTab }: { setActiveTab?: (tab: an
 
   const toggleDay = (dayNum: number) => {
     setExpandedDay(prev => prev === dayNum ? null : dayNum);
+  };
+
+  const toggleQuestion = (qId: string) => {
+    setExpandedQuestion(prev => prev === qId ? null : qId);
   };
 
   const handleStartHere = (e: React.MouseEvent) => {
@@ -103,15 +108,34 @@ export default function ScheduleView({ setActiveTab }: { setActiveTab?: (tab: an
                     // Expanded View
                     <div className="space-y-4 animate-fade-in pt-2">
                       {questionsForDay.map(q => (
-                        <div key={q.id} className="text-sm border-l-2 border-white/10 pl-3">
-                          <div className="flex items-start gap-2 mb-2">
-                            <DifficultyBadge level={q.difficulty as 1|2|3} />
-                            <span className="text-gray-200 leading-relaxed">{q.prompt}</span>
+                        <div 
+                          key={q.id} 
+                          onClick={(e) => { e.stopPropagation(); toggleQuestion(q.id); }}
+                          className={`text-sm border-l-2 cursor-pointer transition-colors p-3 rounded-r-xl ${expandedQuestion === q.id ? "border-indigo-400 bg-white/5" : "border-white/10 hover:bg-white/[0.02]"}`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-start gap-3">
+                              <DifficultyBadge level={q.difficulty as 1|2|3} />
+                              <span className="text-gray-200 leading-relaxed font-medium">{q.prompt}</span>
+                            </div>
+                            <svg className={`w-4 h-4 text-gray-500 mt-0.5 shrink-0 transition-transform duration-300 ${expandedQuestion === q.id ? "rotate-180 text-indigo-400" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
                           </div>
-                          <details className="group/details mt-1">
-                            <summary className="text-xs text-indigo-400/80 cursor-pointer hover:text-indigo-300 transition-colors select-none">Show answer outline ▸</summary>
-                            <p className="mt-2 text-xs text-gray-400 leading-relaxed bg-black/20 p-2.5 rounded border border-white/5">{q.answer_outline}</p>
-                          </details>
+                          
+                          <div className={`grid transition-all duration-300 ease-in-out ${expandedQuestion === q.id ? "grid-rows-[1fr] opacity-100 mt-3" : "grid-rows-[0fr] opacity-0 mt-0"}`}>
+                            <div className="overflow-hidden">
+                              <div className="pt-2">
+                                <p className="text-[10px] font-semibold text-indigo-400/80 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                  Answer Outline
+                                </p>
+                                <div className="mt-1 text-xs text-gray-300/90 leading-relaxed bg-black/25 p-3 rounded-lg border border-white/5 whitespace-pre-wrap">
+                                  {q.answer_outline}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>

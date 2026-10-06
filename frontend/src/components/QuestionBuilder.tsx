@@ -26,20 +26,30 @@ function CategoryTag({ category }: { category: QuestionCategory }) {
 function QuestionCard({ question, index }: { question: Question; index: number }) {
   const { dispatch } = useKit();
   const [isEditing, setIsEditing] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [editPrompt, setEditPrompt] = useState(question.prompt);
   const [editAnswer, setEditAnswer] = useState(question.answer_outline);
 
-  const handleSave = () => {
+  const handleSave = (e: React.MouseEvent) => {
+    e.stopPropagation();
     dispatch({ type: "UPDATE_QUESTION", payload: { ...question, prompt: editPrompt, answer_outline: editAnswer } });
     setIsEditing(false);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
     dispatch({ type: "DELETE_QUESTION", payload: question.id });
   };
 
+  const toggleExpand = () => {
+    if (!isEditing) setIsExpanded(!isExpanded);
+  };
+
   return (
-    <div className={`glass-panel rounded-xl p-5 space-y-3 animate-fade-in transition-all duration-300 group ${question.is_user_edited ? "border-indigo-500/40" : "border-white/10"}`}>
+    <div 
+      onClick={toggleExpand}
+      className={`glass-panel rounded-xl p-5 space-y-3 animate-fade-in transition-all duration-300 group cursor-pointer hover:bg-white/[0.03] ${isExpanded ? "border-indigo-500/30 bg-white/[0.02]" : "border-white/10"} ${question.is_user_edited ? "border-indigo-500/40" : ""}`}
+    >
       {/* Header */}
       <div className="flex items-center justify-between gap-3 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
@@ -49,39 +59,62 @@ function QuestionCard({ question, index }: { question: Question; index: number }
           {question.is_user_edited && <span className="text-xs text-indigo-400 border border-indigo-500/30 bg-indigo-500/10 px-2 py-0.5 rounded-full">✏️ Edited</span>}
           {question.is_user_added && <span className="text-xs text-purple-400 border border-purple-500/30 bg-purple-500/10 px-2 py-0.5 rounded-full">✨ Custom</span>}
         </div>
-        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button onClick={() => setIsEditing(e => !e)} aria-label="Edit question" className="text-gray-400 hover:text-indigo-400 transition-colors p-1 rounded">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-          </button>
-          <button onClick={handleDelete} aria-label="Delete question" className="text-gray-400 hover:text-rose-400 transition-colors p-1 rounded">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-          </button>
+        <div className="flex items-center gap-2">
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 mr-2">
+            <button 
+              onClick={(e) => { e.stopPropagation(); setIsEditing(true); setIsExpanded(true); }} 
+              aria-label="Edit question" 
+              className="text-gray-400 hover:text-indigo-400 transition-colors p-1.5 rounded hover:bg-white/5"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+            </button>
+            <button 
+              onClick={handleDelete} 
+              aria-label="Delete question" 
+              className="text-gray-400 hover:text-rose-400 transition-colors p-1.5 rounded hover:bg-white/5"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            </button>
+          </div>
+          <svg className={`w-5 h-5 text-gray-500 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
       </div>
 
       {/* Content */}
       {isEditing ? (
-        <div className="space-y-3 pt-2">
+        <div className="space-y-4 pt-2" onClick={e => e.stopPropagation()}>
           <div>
-            <label className="text-xs text-gray-400 mb-1 block">Question</label>
-            <textarea value={editPrompt} onChange={e => setEditPrompt(e.target.value)} className="input-field text-sm resize-none" rows={3} />
+            <label className="text-xs font-semibold text-gray-400 mb-1.5 block uppercase tracking-wider">Question Prompt</label>
+            <textarea value={editPrompt} onChange={e => setEditPrompt(e.target.value)} className="input-field text-sm resize-none focus:ring-2 focus:ring-indigo-500/50" rows={3} />
           </div>
           <div>
-            <label className="text-xs text-gray-400 mb-1 block">Answer Outline</label>
-            <textarea value={editAnswer} onChange={e => setEditAnswer(e.target.value)} className="input-field text-sm resize-none" rows={4} />
+            <label className="text-xs font-semibold text-gray-400 mb-1.5 block uppercase tracking-wider">Answer Outline</label>
+            <textarea value={editAnswer} onChange={e => setEditAnswer(e.target.value)} className="input-field text-sm resize-none focus:ring-2 focus:ring-indigo-500/50" rows={4} />
           </div>
-          <div className="flex gap-2">
-            <button onClick={handleSave} className="btn-primary text-sm py-1.5 px-4">Save</button>
-            <button onClick={() => setIsEditing(false)} className="btn-secondary text-sm py-1.5 px-4">Cancel</button>
+          <div className="flex gap-3 pt-2">
+            <button onClick={handleSave} className="btn-primary text-sm py-2 px-6 shadow-lg shadow-indigo-500/20">Save Changes</button>
+            <button onClick={() => setIsEditing(false)} className="btn-secondary text-sm py-2 px-6 hover:bg-white/10 border-transparent">Cancel</button>
           </div>
         </div>
       ) : (
-        <div className="space-y-2">
-          <p className="text-white font-medium leading-relaxed">{question.prompt}</p>
-          <details className="group/details">
-            <summary className="text-xs text-gray-500 cursor-pointer hover:text-indigo-400 transition-colors select-none">Show answer outline ▸</summary>
-            <p className="mt-2 text-sm text-gray-400 leading-relaxed bg-black/20 p-3 rounded-lg border border-white/5">{question.answer_outline}</p>
-          </details>
+        <div className="space-y-3 pt-1">
+          <p className="text-white/95 font-medium leading-relaxed text-[15px]">{question.prompt}</p>
+          
+          <div className={`grid transition-all duration-300 ease-in-out ${isExpanded ? "grid-rows-[1fr] opacity-100 mt-4" : "grid-rows-[0fr] opacity-0 mt-0"}`}>
+            <div className="overflow-hidden">
+              <div className="pt-3 border-t border-white/5">
+                <p className="text-xs font-semibold text-indigo-400/80 uppercase tracking-wider mb-2 flex items-center gap-2">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  Ideal Answer Outline
+                </p>
+                <div className="text-[14px] text-gray-300/90 leading-relaxed bg-black/20 p-4 rounded-xl border border-white/5 whitespace-pre-wrap">
+                  {question.answer_outline}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
