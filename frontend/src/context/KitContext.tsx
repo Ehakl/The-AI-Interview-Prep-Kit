@@ -235,8 +235,8 @@ export function KitProvider({ children }: { children: ReactNode }) {
       if (!res.ok) throw new Error("Regeneration failed");
       const data = await res.json();
       dispatch({ type: "REGENERATE_CATEGORY_SUCCESS", payload: { category, newQuestions: data.questions } });
-    } catch (e) {
-      console.error(e);
+    } catch (e: unknown) {
+      dispatch({ type: "GENERATION_ERROR", payload: (e as Error).message });
     }
   }, [state.kit]);
 

@@ -40,8 +40,8 @@ function KitDashboard() {
 
   return (
     <div className="min-h-screen flex flex-col animate-fade-in">
-      {/* Sticky Header Group */}
-      <div className="sticky top-0 z-40 bg-[#0f1117]/95 backdrop-blur-md flex flex-col shadow-xl">
+      {/* Header Group */}
+      <div className="bg-[#0f1117] flex flex-col shadow-xl">
         {/* Top Nav */}
         <header className="border-b border-white/10 px-4 lg:px-8 py-4">
           <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
