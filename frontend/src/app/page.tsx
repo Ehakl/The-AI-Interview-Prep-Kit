@@ -173,10 +173,33 @@ function HomeForm() {
 }
 
 // ─── Root Page ─────────────────────────────────────────────────────────────────
+import { AuthProvider, useAuth } from "@/context/AuthContext";
+import AuthPage from "@/components/AuthPage";
+
+function AuthenticatedApp() {
+  const { user, isLoading, logout } = useAuth();
+  
+  if (isLoading) return <div className="min-h-screen bg-[#0f1117]" />;
+  if (!user) return <AuthPage />;
+  
+  return (
+    <>
+      <div className="absolute top-4 right-4 z-50">
+        <button onClick={logout} className="text-xs text-gray-400 hover:text-white px-3 py-1.5 rounded-md border border-white/10 hover:bg-white/5 transition-colors">
+          Sign out ({user.email})
+        </button>
+      </div>
+      <KitProvider>
+        <HomeForm />
+      </KitProvider>
+    </>
+  );
+}
+
 export default function App() {
   return (
-    <KitProvider>
-      <HomeForm />
-    </KitProvider>
+    <AuthProvider>
+      <AuthenticatedApp />
+    </AuthProvider>
   );
 }

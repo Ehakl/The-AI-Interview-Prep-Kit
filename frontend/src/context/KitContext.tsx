@@ -171,33 +171,80 @@ interface KitContextValue {
 
 const KitContext = createContext<KitContextValue | null>(null);
 
+import { useAuth } from "./AuthContext";
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 export function KitProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(kitReducer, initialState);
+  const { token } = useAuth();
+  const [isInitializing, setIsInitializing] = React.useState(true);
 
-  // Load from local storage on mount
+  // Load from DB on mount
   React.useEffect(() => {
-    try {
-      const saved = localStorage.getItem("trao_prep_kit");
-      if (saved) {
-        dispatch({ type: "GENERATION_SUCCESS", payload: JSON.parse(saved) });
+    async function loadKit() {
+      if (!token) {
+        setIsInitializing(false);
+        return;
       }
-    } catch (e) {
-      console.error("Failed to parse saved kit", e);
+      try {
+        const res = await fetch(`${API_BASE}/api/kits`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.kits && data.kits.length > 0) {
+            dispatch({ type: "GENERATION_SUCCESS", payload: data.kits[0] });
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch kit", e);
+      } finally {
+        setIsInitializing(false);
+      }
     }
-  }, []);
+    loadKit();
+  }, [token]);
 
-  // Save to local storage on change
+  // Save to DB on change
   React.useEffect(() => {
-    if (state.kit) {
-      localStorage.setItem("trao_prep_kit", JSON.stringify(state.kit));
-    } else if (!state.isGenerating) {
-      // Only remove if we explicitly reset, not during generation
-      localStorage.removeItem("trao_prep_kit");
+    if (!token || isInitializing || state.isGenerating) return;
+    
+    async function saveKit() {
+      if (state.kit) {
+        try {
+          if (state.kit._id) {
+            await fetch(`${API_BASE}/api/kits/${state.kit._id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+              body: JSON.stringify({ kit: state.kit })
+            });
+          } else {
+            const res = await fetch(`${API_BASE}/api/kits`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+              body: JSON.stringify({ kit: state.kit })
+            });
+            const data = await res.json();
+            if (data.kit && data.kit._id) {
+              dispatch({ type: "GENERATION_SUCCESS", payload: data.kit });
+            }
+          }
+        } catch (e) {
+          console.error("Failed to sync kit to DB", e);
+        }
+      } else {
+        // If kit was explicitly reset (e.g., deleted)
+        // For now, we only load the latest kit, so resetting just clears local state.
+        // A true delete would call DELETE /api/kits/:id
+      }
     }
-  }, [state.kit, state.isGenerating]);
+    
+    // Simple debounce to avoid spamming the DB on every keystroke
+    const timeoutId = setTimeout(saveKit, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [state.kit, token, isInitializing, state.isGenerating]);
 
   const generateKit = useCallback(async (jd: string, companyUrl: string, days: number) => {
     dispatch({ type: "GENERATION_START" });
@@ -205,7 +252,7 @@ export function KitProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "GENERATION_STEP", payload: "🔍 Crawling company website..." });
       const res = await fetch(`${API_BASE}/api/generate`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...(token && { Authorization: `Bearer ${token}` }) },
         body: JSON.stringify({ jd, company_url: companyUrl, days_available: days }),
       });
       dispatch({ type: "GENERATION_STEP", payload: "🧠 Extracting requirements..." });
