@@ -1,0 +1,14 @@
+[
+  {
+    "id": "case-01",
+    "jd": "Senior Backend Engineer\n\nWe are looking for an experienced backend engineer with 5+ years of Node.js. Must have experience with MongoDB and Express. Nice to have: system design experience.",
+    "company_url": "https://example.com",
+    "days": 5
+  },
+  {
+    "id": "case-02",
+    "jd": "Frontend Developer\n\nMust know React and Tailwind CSS.",
+    "company_url": "https://nonexistent-company-example-404.com",
+    "days": 2
+  }
+]
