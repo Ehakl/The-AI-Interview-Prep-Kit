@@ -88,17 +88,27 @@ class ScheduleAllocator {
       if (day.question_ids.length === 0) {
         day.focus = 'Rest and Review';
       } else {
-        // Find most common category for focus
-        const catCounts = {};
+        // Find most common requirement for focus
+        const reqCounts = {};
         day.question_ids.forEach(qId => {
           const q = questions.find(qu => qu.id === qId);
-          if (q) {
-            catCounts[q.category] = (catCounts[q.category] || 0) + 1;
+          if (q && q.requirement_ids) {
+            q.requirement_ids.forEach(rId => {
+              reqCounts[rId] = (reqCounts[rId] || 0) + 1;
+            });
           }
         });
-        const topCat = Object.keys(catCounts).sort((a,b) => catCounts[b] - catCounts[a])[0];
-        // Format string (e.g. "technical" -> "Technical Focus")
-        day.focus = topCat ? topCat.charAt(0).toUpperCase() + topCat.slice(1) + ' Focus' : 'Mixed Review';
+
+        let focusText = 'Mixed Review';
+        if (Object.keys(reqCounts).length > 0) {
+          const topReqId = Object.keys(reqCounts).sort((a,b) => reqCounts[b] - reqCounts[a])[0];
+          const req = reqMap[topReqId];
+          if (req && req.text) {
+            focusText = req.text.length > 40 ? req.text.substring(0, 37) + '...' : req.text;
+            focusText = focusText.charAt(0).toUpperCase() + focusText.slice(1);
+          }
+        }
+        day.focus = focusText;
       }
     }
 

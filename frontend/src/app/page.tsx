@@ -63,6 +63,13 @@ function KitDashboard() {
           </div>
         </header>
 
+        {state.error && (
+          <div className="bg-rose-500/10 border-b border-rose-500/30 px-4 lg:px-8 py-2 flex justify-between items-center">
+            <span className="text-sm text-rose-400">⚠ {state.error}</span>
+            <button onClick={() => dispatch({ type: "GENERATION_ERROR", payload: "" })} className="text-gray-400 hover:text-white">✕</button>
+          </div>
+        )}
+
         {/* Tab Bar */}
         <div className="border-b border-white/5 px-4 lg:px-8">
           <div className="max-w-6xl mx-auto flex overflow-x-auto hide-scrollbar gap-1">

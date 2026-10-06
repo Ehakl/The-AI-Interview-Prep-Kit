@@ -77,6 +77,18 @@ export default function FlashcardMode() {
     count: kit.flashcards.filter(f => f.confidence_score === c.score).length,
   }));
 
+  if (kit.flashcards.length === 0) {
+    return (
+      <div className="glass-panel rounded-2xl p-12 text-center flex flex-col items-center justify-center space-y-4">
+        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-2xl mb-2">🃏</div>
+        <h3 className="text-xl font-semibold text-white">No flashcards generated</h3>
+        <p className="text-sm text-gray-400 max-w-sm">
+          It looks like this kit doesn't have any flashcards.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Summary strip */}

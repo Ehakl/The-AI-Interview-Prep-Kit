@@ -150,13 +150,25 @@ export default function QuestionBuilder() {
     return acc;
   }, {});
 
+  const totalQuestions = kit.questions.length;
+
   return (
     <div className="space-y-10">
-      {CATEGORIES.map(cat => (
-        questionsByCategory[cat].length > 0 && (
-          <CategorySection key={cat} category={cat} questions={questionsByCategory[cat]} />
-        )
-      ))}
+      {totalQuestions === 0 ? (
+        <div className="glass-panel rounded-2xl p-12 text-center flex flex-col items-center justify-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-2xl mb-2">💬</div>
+          <h3 className="text-xl font-semibold text-white">No questions generated yet</h3>
+          <p className="text-sm text-gray-400 max-w-sm">
+            It looks like this kit doesn't have any questions. Try regenerating the kit or adding custom questions manually.
+          </p>
+        </div>
+      ) : (
+        CATEGORIES.map(cat => (
+          questionsByCategory[cat].length > 0 && (
+            <CategorySection key={cat} category={cat} questions={questionsByCategory[cat]} />
+          )
+        ))
+      )}
     </div>
   );
 }

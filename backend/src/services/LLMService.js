@@ -82,14 +82,32 @@ class LLMService {
     return this.callWithRetry(prompt);
   }
 
-  // Pass 2: Generation
-  async generateQuestions(requirements) {
+  // Pass 2: Generation (Per Category)
+  async generateQuestionsForCategory(requirements, category) {
+    if (!requirements || requirements.length === 0) return { questions: [], flashcards: [] };
+
+    let categoryContext = "";
+    if (category === "technical") {
+      categoryContext = "Focus on hard skills, programming languages, tools, and technical concepts.";
+    } else if (category === "behavioural") {
+      categoryContext = "Focus on soft skills, past experiences, conflict resolution, and teamwork (STAR method).";
+    } else if (category === "system-design") {
+      categoryContext = "Focus on architecture, scalability, tradeoffs, and high-level system components.";
+    } else if (category === "company-fit") {
+      categoryContext = "Focus on culture, values, alignment with the company mission, and career goals.";
+    }
+
     const prompt = `
-      Generate interview questions and flashcards for the following requirements.
+      Generate interview questions and flashcards specifically for the '${category}' category based on the following requirements.
+      ${categoryContext}
+      
+      CRITICAL INSTRUCTION: Generate at least 2 questions for each "must" priority requirement if the requirement is relevant to this category.
+      Do NOT invent requirements. Only use the provided requirements.
+      
       Output STRICT JSON matching this schema exactly:
       {
         "questions": [
-          { "id": "q1", "requirement_ids": ["r1"], "category": "technical|behavioural|system-design|company-fit", "prompt": "...", "answer_outline": "...", "difficulty": 2 }
+          { "id": "q1", "requirement_ids": ["r1"], "category": "${category}", "prompt": "...", "answer_outline": "...", "difficulty": 2 }
         ],
         "flashcards": [
           { "id": "f1", "front": "...", "back": "...", "requirement_ids": ["r1"] }

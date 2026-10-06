@@ -29,10 +29,20 @@ class PipelineRunner {
     const extraction = await this.llm.extractRequirements(jobDescription, crawlData.content);
     const requirements = extraction.requirements || [];
     
-    // 3. Draft Questions (Pass 1)
-    const draft = await this.llm.generateQuestions(requirements);
-    let questions = draft.questions || [];
-    let flashcards = draft.flashcards || [];
+    // 3. Draft Questions (Pass 1 - Per Category)
+    let questions = [];
+    let flashcards = [];
+    const categories = ["technical", "behavioural", "system-design", "company-fit"];
+    
+    for (const cat of categories) {
+      try {
+        const draft = await this.llm.generateQuestionsForCategory(requirements, cat);
+        if (draft.questions) questions.push(...draft.questions);
+        if (draft.flashcards) flashcards.push(...draft.flashcards);
+      } catch (e) {
+        console.error(`[PipelineRunner] Failed generation for category ${cat}:`, e.message);
+      }
+    }
 
     // 4. The Coverage Loop
     let coverageAnalysis = CoverageAnalyzer.analyze(requirements, questions);
@@ -45,9 +55,8 @@ class PipelineRunner {
       const missingRequirements = requirements.filter(r => coverageAnalysis.uncovered_must_ids.includes(r.id));
       
       try {
-        const gapDraft = await this.llm.generateQuestions(missingRequirements);
-        
-        // Append new gap questions
+        // Gap pass uses technical as a generic catch-all, or we could inspect the kind. We'll pass it to technical.
+        const gapDraft = await this.llm.generateQuestionsForCategory(missingRequirements, "technical");
         if (gapDraft.questions) questions.push(...gapDraft.questions);
         if (gapDraft.flashcards) flashcards.push(...gapDraft.flashcards);
       } catch (e) {
@@ -56,6 +65,32 @@ class PipelineRunner {
       }
       
       passes++;
+      coverageAnalysis = CoverageAnalyzer.analyze(requirements, questions);
+    }
+
+    // Deterministic fallback for uncovered must-haves
+    if (!coverageAnalysis.is_full_must_coverage) {
+      console.warn(`[PipelineRunner] Adding deterministic templates for uncovered must-haves: ${coverageAnalysis.uncovered_must_ids.join(', ')}`);
+      const missingRequirements = requirements.filter(r => coverageAnalysis.uncovered_must_ids.includes(r.id));
+      
+      missingRequirements.forEach((req, idx) => {
+        questions.push({
+          id: `fallback-q-${Date.now()}-${idx}`,
+          requirement_ids: [req.id],
+          category: req.kind === 'behavioural' ? 'behavioural' : 'technical',
+          prompt: `Please discuss your experience and skills regarding: ${req.text}`,
+          answer_outline: `1. Define the core concepts clearly.\n2. Provide a concrete example from your past experience (STAR method).\n3. Discuss the impact of your work.`,
+          difficulty: 2
+        });
+        flashcards.push({
+          id: `fallback-f-${Date.now()}-${idx}`,
+          requirement_ids: [req.id],
+          front: `Explain the key principles of: ${req.text}`,
+          back: `Ensure you can discuss the definition, practical application, and business impact.`,
+          confidence_score: 0
+        });
+      });
+      // Re-analyze so final metrics are 100% correct
       coverageAnalysis = CoverageAnalyzer.analyze(requirements, questions);
     }
 
