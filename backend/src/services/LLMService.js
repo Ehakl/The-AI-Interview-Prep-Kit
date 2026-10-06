@@ -23,7 +23,7 @@ class LLMService {
   }
 
   // Built-in request back-off for Rate Limiting Resilience (429)
-  async callWithRetry(prompt, retries = 6) {
+  async callWithRetry(prompt, retries = 1) {
     if (!this.apiKey) {
       throw new Error("GEMINI_API_KEY is not set in environment variables.");
     }
