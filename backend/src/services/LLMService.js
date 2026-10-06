@@ -44,9 +44,9 @@ class LLMService {
         
         return JSON.parse(response.text);
       } catch (error) {
-        if (error.status === 429 || error.message.includes('429')) {
-          console.warn(`[LLMService] Rate limited by Gemini. Retrying attempt ${attempt}/${retries}...`);
-          if (attempt === retries) throw new Error("Gemini Rate limit exceeded. Please try again later.");
+        if (error.status === 429 || error.status === 503 || error.message.includes('429') || error.message.includes('503')) {
+          console.warn(`[LLMService] API Overloaded. Retrying attempt ${attempt}/${retries}...`);
+          if (attempt === retries) throw new Error("Google's servers are currently overloaded due to high demand. Please wait a minute and try again.");
           await new Promise(resolve => setTimeout(resolve, attempt * 4000));
         } else {
           console.error(`[LLMService] LLM Call Failed: ${error.message}`);
