@@ -19,11 +19,11 @@ class LLMService {
     if (this.apiKey) {
         this.ai = new GoogleGenAI({ apiKey: this.apiKey });
     }
-    this.model = 'gemini-3.8-flash';
+    this.model = 'gemini-1.5-flash-8b';
   }
 
   // Built-in request back-off for Rate Limiting Resilience (429)
-  async callWithRetry(prompt, retries = 3) {
+  async callWithRetry(prompt, retries = 6) {
     if (!this.apiKey) {
       throw new Error("GEMINI_API_KEY is not set in environment variables.");
     }
