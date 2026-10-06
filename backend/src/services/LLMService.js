@@ -43,15 +43,16 @@ class LLMService {
         return JSON.parse(content);
       } catch (error) {
         if (error.response && error.response.status === 429) {
-          // Rate limit hit. Back off.
           console.warn(`[LLMService] Rate limited. Retrying attempt ${attempt}/${retries}...`);
-          await new Promise(resolve => setTimeout(resolve, attempt * 2000));
+          if (attempt === retries) throw new Error("OpenAI Rate limit exceeded. Your free tier API key is out of credits or hit its request limit. Please check your OpenAI billing dashboard.");
+          await new Promise(resolve => setTimeout(resolve, attempt * 4000));
         } else {
           console.error(`[LLMService] LLM Call Failed: ${error.message}`);
           if (attempt === retries) throw error;
         }
       }
     }
+    throw new Error("Failed to contact OpenAI after maximum retries.");
   }
 
   // Pass 1: Extraction
