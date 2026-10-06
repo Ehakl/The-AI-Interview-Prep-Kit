@@ -41,7 +41,7 @@ function KitDashboard() {
   return (
     <div className="min-h-screen flex flex-col animate-fade-in">
       {/* Top Nav */}
-      <header className="glass-panel border-b border-white/5 sticky top-0 z-40 px-4 lg:px-8 py-4">
+      <header className="bg-[var(--color-background)]/95 backdrop-blur-md border-b border-white/10 sticky top-0 z-40 px-4 lg:px-8 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <button onClick={() => dispatch({ type: "RESET" })} className="text-gray-400 hover:text-white transition-colors" aria-label="Back to home">
@@ -54,7 +54,7 @@ function KitDashboard() {
           </div>
           <div className="flex items-center gap-2">
             <span className={`text-xs px-2 py-1 rounded-full border ${kit.coverage.uncovered_requirement_ids.length === 0 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-amber-500/10 border-amber-500/30 text-amber-400"}`}>
-              {kit.coverage.uncovered_requirement_ids.length === 0 ? "✓ All must-haves covered" : `⚠ ${kit.coverage.uncovered_requirement_ids.length} gaps`}
+              {kit.coverage.uncovered_requirement_ids.length === 0 ? "✓ All must-haves covered" : `⚠ ${kit.coverage.uncovered_requirement_ids.length} ${kit.coverage.uncovered_requirement_ids.length === 1 ? 'gap' : 'gaps'}`}
             </span>
             <span className="text-xs text-gray-500 hidden md:inline">{kit.schedule.days_available}d plan · {kit.questions.length}q · {kit.flashcards.length} cards</span>
           </div>

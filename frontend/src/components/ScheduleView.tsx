@@ -28,9 +28,6 @@ export default function ScheduleView() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-400">Your <strong className="text-white">{days.length}-day</strong> study plan. High-priority topics load first.</p>
-        <span className={`text-xs px-3 py-1 rounded-full border ${kit.coverage.uncovered_requirement_ids.length === 0 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : "bg-amber-500/10 border-amber-500/30 text-amber-400"}`}>
-          {kit.coverage.uncovered_requirement_ids.length === 0 ? "✓ Full Coverage" : `⚠ ${kit.coverage.uncovered_requirement_ids.length} gaps`}
-        </span>
       </div>
 
       <div className="space-y-3">
