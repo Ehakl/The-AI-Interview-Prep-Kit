@@ -16,13 +16,13 @@ class WebCrawler {
   // Safe fetch that returns null on failure instead of throwing
   async fetchPage(url) {
     try {
-      // Security: Prevent loopback/private IP ranges
       const parsed = new URL(url);
-      if (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' || parsed.hostname.startsWith('10.') || parsed.hostname.startsWith('192.168.')) {
-         // The prompt says "The company sites used with this command may be served from a local address, so your retrieval code must not assume a particular host and must follow relative links. This command must run from a clean clone."
-         // WAIT: "The company sites used with this command may be served from a local address". 
-         // So for the batch command we MUST allow localhost! 
-         // Let's just allow it here but in production we'd block it.
+      const isPrivate = parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1' || parsed.hostname.startsWith('10.') || parsed.hostname.startsWith('192.168.');
+      
+      const allowPrivate = process.env.ALLOW_PRIVATE_HOSTS === 'true';
+      if (isPrivate && !allowPrivate) {
+         console.warn(`[WebCrawler] Blocked fetch to private host: ${url} (ALLOW_PRIVATE_HOSTS is not true)`);
+         return null;
       }
 
       const response = await axios.get(url, { timeout: this.timeoutMs });

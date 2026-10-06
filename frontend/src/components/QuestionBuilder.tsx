@@ -62,6 +62,14 @@ function QuestionCard({ question, index }: { question: Question; index: number }
         <div className="flex items-center gap-2">
           <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 mr-2">
             <button 
+              onClick={(e) => { e.stopPropagation(); dispatch({ type: "MOVE_QUESTION", payload: { id: question.id, direction: "up" }}); }} 
+              className="text-gray-400 hover:text-indigo-400 p-1 rounded hover:bg-white/5" title="Move Up"
+            >↑</button>
+            <button 
+              onClick={(e) => { e.stopPropagation(); dispatch({ type: "MOVE_QUESTION", payload: { id: question.id, direction: "down" }}); }} 
+              className="text-gray-400 hover:text-indigo-400 p-1 rounded hover:bg-white/5" title="Move Down"
+            >↓</button>
+            <button 
               onClick={(e) => { e.stopPropagation(); setIsEditing(true); setIsExpanded(true); }} 
               aria-label="Edit question" 
               className="text-gray-400 hover:text-indigo-400 transition-colors p-1.5 rounded hover:bg-white/5"
@@ -85,6 +93,33 @@ function QuestionCard({ question, index }: { question: Question; index: number }
       {/* Content */}
       {isEditing ? (
         <div className="space-y-4 pt-2" onClick={e => e.stopPropagation()}>
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <label className="text-xs font-semibold text-gray-400 mb-1.5 block uppercase tracking-wider">Category</label>
+              <select 
+                value={question.category} 
+                onChange={(e) => dispatch({ type: "UPDATE_QUESTION", payload: { ...question, category: e.target.value as QuestionCategory }})}
+                className="input-field text-sm p-2 w-full"
+              >
+                <option value="technical">Technical</option>
+                <option value="system-design">System Design</option>
+                <option value="behavioural">Behavioural</option>
+                <option value="company-fit">Company Fit</option>
+              </select>
+            </div>
+            <div className="flex-1">
+              <label className="text-xs font-semibold text-gray-400 mb-1.5 block uppercase tracking-wider">Difficulty</label>
+              <select 
+                value={question.difficulty} 
+                onChange={(e) => dispatch({ type: "UPDATE_QUESTION", payload: { ...question, difficulty: parseInt(e.target.value) as 1 | 2 | 3 }})}
+                className="input-field text-sm p-2 w-full"
+              >
+                <option value={1}>Easy</option>
+                <option value={2}>Medium</option>
+                <option value={3}>Hard</option>
+              </select>
+            </div>
+          </div>
           <div>
             <label className="text-xs font-semibold text-gray-400 mb-1.5 block uppercase tracking-wider">Question Prompt</label>
             <textarea value={editPrompt} onChange={e => setEditPrompt(e.target.value)} className="input-field text-sm resize-none focus:ring-2 focus:ring-indigo-500/50" rows={3} />

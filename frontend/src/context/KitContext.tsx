@@ -81,6 +81,7 @@ type Action =
   | { type: "UPDATE_QUESTION"; payload: Question }
   | { type: "DELETE_QUESTION"; payload: string }
   | { type: "ADD_QUESTION"; payload: Question }
+  | { type: "MOVE_QUESTION"; payload: { id: string; direction: "up" | "down" } }
   | { type: "REORDER_QUESTIONS"; payload: Question[] }
   | { type: "UPDATE_FLASHCARD"; payload: Flashcard }
   | { type: "UPDATE_FLASHCARD_CONFIDENCE"; payload: { id: string; confidence_score: number } }
@@ -131,6 +132,23 @@ function kitReducer(state: KitState, action: Action): KitState {
         f.id === action.payload.id ? { ...action.payload, is_user_edited: true } : f
       );
       return { ...state, kit: { ...state.kit, flashcards: updated } };
+    }
+
+    case "MOVE_QUESTION": {
+      if (!state.kit) return state;
+      const { id, direction } = action.payload;
+      const idx = state.kit.questions.findIndex(q => q.id === id);
+      if (idx < 0) return state;
+      
+      const newIdx = direction === "up" ? idx - 1 : idx + 1;
+      if (newIdx < 0 || newIdx >= state.kit.questions.length) return state;
+      
+      const newQuestions = [...state.kit.questions];
+      const temp = newQuestions[idx];
+      newQuestions[idx] = newQuestions[newIdx];
+      newQuestions[newIdx] = temp;
+      
+      return { ...state, kit: { ...state.kit, questions: newQuestions } };
     }
 
     case "UPDATE_FLASHCARD_CONFIDENCE": {

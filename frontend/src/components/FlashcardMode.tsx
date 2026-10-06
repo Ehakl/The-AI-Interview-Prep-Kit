@@ -89,9 +89,10 @@ export default function FlashcardMode() {
 
   if (!kit) return null;
 
-  const filtered = filter === "all"
-    ? kit.flashcards
-    : kit.flashcards.filter(f => f.confidence_score === filter);
+  const filtered = (filter === "all"
+    ? [...kit.flashcards]
+    : kit.flashcards.filter(f => f.confidence_score === filter)
+  ).sort((a, b) => a.confidence_score - b.confidence_score);
 
   const totalByConf = confidenceConfig.map(c => ({
     ...c,
