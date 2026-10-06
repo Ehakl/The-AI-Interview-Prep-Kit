@@ -1,4 +1,4 @@
-const axios = require('axios');
+const { GoogleGenAI } = require('@google/genai');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -6,45 +6,47 @@ dotenv.config();
 /**
  * LLMService.js
  * 
- * Handles interaction with the LLM API, enforcing structured JSON output.
+ * Handles interaction with the LLM API (switched to Gemini), enforcing structured JSON output.
  * Rate limiting resilience: built-in retry backoff for HTTP 429.
  */
 class LLMService {
   constructor() {
-    this.apiKey = process.env.OPENAI_API_KEY;
-    this.baseUrl = 'https://api.openai.com/v1/chat/completions';
-    this.model = 'gpt-3.5-turbo'; // Use an affordable, fast model suitable for free tier
+    this.apiKey = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
+    if (!this.apiKey) {
+      console.warn("API Key is missing. Please set GEMINI_API_KEY.");
+    }
+    // Only initialize if we have a key (prevents crashing at startup before env is loaded on Render)
+    if (this.apiKey) {
+        this.ai = new GoogleGenAI({ apiKey: this.apiKey });
+    }
+    this.model = 'gemini-2.5-flash';
   }
 
   // Built-in request back-off for Rate Limiting Resilience (429)
-  async callWithRetry(messages, schema, retries = 3) {
+  async callWithRetry(prompt, retries = 3) {
     if (!this.apiKey) {
-      throw new Error("OPENAI_API_KEY is not set in environment variables.");
+      throw new Error("GEMINI_API_KEY is not set in environment variables.");
     }
-
-    const payload = {
-      model: this.model,
-      messages: messages,
-      response_format: { type: "json_object" },
-      temperature: 0.2
-    };
+    if (!this.ai) {
+        this.ai = new GoogleGenAI({ apiKey: this.apiKey });
+    }
 
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        const response = await axios.post(this.baseUrl, payload, {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json'
-          },
-          timeout: 30000 // 30s timeout per call
+        const response = await this.ai.models.generateContent({
+          model: this.model,
+          contents: prompt,
+          config: {
+            responseMimeType: "application/json",
+            temperature: 0.2
+          }
         });
         
-        const content = response.data.choices[0].message.content;
-        return JSON.parse(content);
+        return JSON.parse(response.text);
       } catch (error) {
-        if (error.response && error.response.status === 429) {
-          console.warn(`[LLMService] Rate limited. Retrying attempt ${attempt}/${retries}...`);
-          if (attempt === retries) throw new Error("OpenAI Rate limit exceeded. Your free tier API key is out of credits or hit its request limit. Please check your OpenAI billing dashboard.");
+        if (error.status === 429 || error.message.includes('429')) {
+          console.warn(`[LLMService] Rate limited by Gemini. Retrying attempt ${attempt}/${retries}...`);
+          if (attempt === retries) throw new Error("Gemini Rate limit exceeded. Please try again later.");
           await new Promise(resolve => setTimeout(resolve, attempt * 4000));
         } else {
           console.error(`[LLMService] LLM Call Failed: ${error.message}`);
@@ -52,7 +54,7 @@ class LLMService {
         }
       }
     }
-    throw new Error("Failed to contact OpenAI after maximum retries.");
+    throw new Error("Failed to contact Gemini after maximum retries.");
   }
 
   // Pass 1: Extraction
@@ -60,8 +62,8 @@ class LLMService {
     const prompt = `
       You are an expert technical recruiter. Analyze the following Job Description and Company Context.
       Extract the job requirements. Differentiate cleanly between "must" (required) and "nice" (bonus).
-      If the job description is a short stub, do not invent requirements.
-      Output STRICT JSON matching this schema:
+      If the job description is a short stub, do not invent requirements. Return an empty structure if insufficient details.
+      Output STRICT JSON matching this schema exactly:
       {
         "role": { "title": "...", "seniority": "...", "responsibilities": ["..."] },
         "company_brief": { "summary": "...", "what_they_do": "..." },
@@ -77,15 +79,14 @@ class LLMService {
       ${crawledContext}
     `;
 
-    const messages = [{ role: "user", content: prompt }];
-    return this.callWithRetry(messages);
+    return this.callWithRetry(prompt);
   }
 
   // Pass 2: Generation
   async generateQuestions(requirements) {
     const prompt = `
       Generate interview questions and flashcards for the following requirements.
-      Output STRICT JSON matching this schema:
+      Output STRICT JSON matching this schema exactly:
       {
         "questions": [
           { "id": "q1", "requirement_ids": ["r1"], "category": "technical|behavioural|system-design|company-fit", "prompt": "...", "answer_outline": "...", "difficulty": 2 }
@@ -99,8 +100,7 @@ class LLMService {
       ${JSON.stringify(requirements, null, 2)}
     `;
 
-    const messages = [{ role: "user", content: prompt }];
-    return this.callWithRetry(messages);
+    return this.callWithRetry(prompt);
   }
 }
 
