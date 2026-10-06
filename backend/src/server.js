@@ -21,7 +21,6 @@ if (process.env.MONGODB_URI) {
 // ─── Routes ────────────────────────────────────────────────────────────────────
 const authRoutes = require('./routes/auth');
 const kitRoutes = require('./routes/kits');
-const PipelineRunner = require('./services/PipelineRunner');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/kits', kitRoutes);

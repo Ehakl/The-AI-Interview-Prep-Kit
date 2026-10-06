@@ -79,6 +79,7 @@ class LLMService {
       
       Company Context:
       <DATA>${crawledContext}</DATA>
+    `;
 
     return this.callWithRetry(prompt);
   }
