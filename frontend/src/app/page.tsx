@@ -83,7 +83,7 @@ function KitDashboard() {
       {/* Content */}
       <main className="flex-1 px-4 lg:px-8 py-8">
         <div className="max-w-4xl mx-auto">
-          {activeTab === "schedule" && <ScheduleView />}
+          {activeTab === "schedule" && <ScheduleView setActiveTab={setActiveTab} />}
           {activeTab === "questions" && <QuestionBuilder />}
           {activeTab === "flashcards" && <FlashcardMode />}
           {activeTab === "gap" && <GapInterviewer />}
