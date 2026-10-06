@@ -19,7 +19,7 @@ class LLMService {
     if (this.apiKey) {
         this.ai = new GoogleGenAI({ apiKey: this.apiKey });
     }
-    this.model = 'gemini-flash-latest';
+    this.model = 'gemini-3.1-flash-lite';
   }
 
   // Built-in request back-off for Rate Limiting Resilience (429)
