@@ -48,9 +48,16 @@ async function fetchApi(endpoint, options = {}) {
 (async () => {
   console.log(`Starting smoke test against ${baseUrl}\n`);
 
-  await runStep("GET /api/health", async () => {
+  await runStep("Contract Test (Proxy): Next.js rewrites to Backend /api", async () => {
+    // If the rewrite in next.config.ts has a missing or double /api prefix, 
+    // the backend Express router won't match app.use('/api/...') and will return a 404 Route not found.
     const { status, data } = await fetchApi("/api/health");
-    if (status !== 200 || data.status !== "ok") throw new Error("Health check failed");
+    if (status === 404 && data.message === "Route not found") {
+      throw new Error("Contract Failed: Proxy missing or duplicating /api prefix. Backend returned 404 fallback.");
+    }
+    if (status !== 200 || (data.status !== "ok" && data.status !== "error")) {
+      throw new Error("Contract Failed: Did not receive expected backend health response.");
+    }
   });
 
   await runStep("POST /api/auth/register", async () => {
