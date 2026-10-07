@@ -32,7 +32,7 @@ app.use((err, req, res, next) => {
 });
 
 // ─── Database ──────────────────────────────────────────────────────────────────
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, { family: 4 })
   .then(() => console.log('[Server] MongoDB connected'))
   .catch(err => {
     console.error('[Fatal] MongoDB connection failed:', err.message);
