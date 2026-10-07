@@ -5,18 +5,39 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+// ─── Environment Validation ──────────────────────────────────────────────────
+const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'];
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    console.error(`[Fatal] Missing required environment variable: ${envVar}`);
+    process.exit(1);
+  }
+}
+
 const PipelineRunner = require('./services/PipelineRunner');
+
+const cookieParser = require('cookie-parser');
 
 const app = express();
 app.use(cors());
+
+// Body parser with error handling (catches invalid JSON so it doesn't return HTML)
 app.use(express.json({ limit: '1mb' }));
+app.use(cookieParser());
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ code: 400, message: 'Invalid JSON payload' });
+  }
+  next(err);
+});
 
 // ─── Database ──────────────────────────────────────────────────────────────────
-if (process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('[Server] MongoDB connected'))
-    .catch(err => console.warn('[Server] MongoDB optional — running without persistence:', err.message));
-}
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('[Server] MongoDB connected'))
+  .catch(err => {
+    console.error('[Fatal] MongoDB connection failed:', err.message);
+    process.exit(1);
+  });
 
 // ─── Routes ────────────────────────────────────────────────────────────────────
 const authRoutes = require('./routes/auth');
@@ -27,7 +48,7 @@ app.use('/api/kits', kitRoutes);
 const runner = new PipelineRunner();
 
 // POST /api/generate
-app.post('/api/generate', async (req, res) => {
+app.post('/api/generate', async (req, res, next) => {
   try {
     const { jd, company_url, days_available } = req.body;
     
@@ -38,13 +59,12 @@ app.post('/api/generate', async (req, res) => {
     const kit = await runner.run(jd, company_url || '', parseInt(days_available) || 5);
     return res.json({ kit });
   } catch (e) {
-    console.error('[/api/generate] Error:', e.message);
-    return res.status(500).json({ message: e.message });
+    next(e);
   }
 });
 
 // POST /api/regenerate-category
-app.post('/api/regenerate-category', async (req, res) => {
+app.post('/api/regenerate-category', async (req, res, next) => {
   const LLMService = require('./services/LLMService');
   const llm = new LLMService();
   
@@ -60,13 +80,33 @@ app.post('/api/regenerate-category', async (req, res) => {
     const filtered = (result.questions || []).filter(q => q.category === category);
     return res.json({ questions: filtered });
   } catch (e) {
-    console.error('[/api/regenerate-category] Error:', e.message);
-    return res.status(500).json({ message: e.message });
+    next(e);
   }
 });
 
 // Health check
-app.get('/api/health', (_, res) => res.json({ status: 'ok', timestamp: new Date().toISOString() }));
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
+});
+
+// ─── 404 Handler (Guarantees JSON) ─────────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({ code: 404, message: 'Route not found' });
+});
+
+// ─── Global Error Handler (Guarantees JSON) ────────────────────────────────────
+app.use((err, req, res, next) => {
+  console.error('[Global Error]', err.stack || err.message);
+  res.status(500).json({ 
+    code: 500, 
+    message: err.message || 'Internal Server Error',
+    details: process.env.NODE_ENV === 'development' ? err.stack : undefined
+  });
+});
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`[Server] Running on http://localhost:${PORT}`));

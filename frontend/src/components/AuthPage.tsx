@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+import { apiFetch } from "../utils/apiFetch";
 
 export default function AuthPage() {
   const { login } = useAuth();
@@ -19,18 +19,15 @@ export default function AuthPage() {
 
     const endpoint = isLogin ? "/auth/login" : "/auth/register";
     try {
-      const res = await fetch(`${API_URL}${endpoint}`, {
+      const data = await apiFetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Authentication failed");
-
-      login(data.token, data.user);
+      login(data.user);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || "An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }

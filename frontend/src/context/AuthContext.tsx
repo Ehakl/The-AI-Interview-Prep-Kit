@@ -1,16 +1,17 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+import { apiFetch } from "../utils/apiFetch";
+
 type User = { id: string; email: string };
 
 type AuthState = {
   user: User | null;
-  token: string | null;
   isLoading: boolean;
 };
 
 type AuthContextType = AuthState & {
-  login: (token: string, user: User) => void;
+  login: (user: User) => void;
   logout: () => void;
 };
 
@@ -19,34 +20,32 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>({
     user: null,
-    token: null,
     isLoading: true,
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("trao_token");
-    const userStr = localStorage.getItem("trao_user");
-    if (token && userStr) {
+    async function checkAuth() {
       try {
-        setState({ user: JSON.parse(userStr), token, isLoading: false });
-      } catch (e) {
-        setState({ user: null, token: null, isLoading: false });
+        const data = await apiFetch("/auth/me");
+        setState({ user: data.user, isLoading: false });
+      } catch (err) {
+        setState({ user: null, isLoading: false });
       }
-    } else {
-      setState({ user: null, token: null, isLoading: false });
     }
+    checkAuth();
   }, []);
 
-  const login = (token: string, user: User) => {
-    localStorage.setItem("trao_token", token);
-    localStorage.setItem("trao_user", JSON.stringify(user));
-    setState({ user, token, isLoading: false });
+  const login = (user: User) => {
+    setState({ user, isLoading: false });
   };
 
-  const logout = () => {
-    localStorage.removeItem("trao_token");
-    localStorage.removeItem("trao_user");
-    setState({ user: null, token: null, isLoading: false });
+  const logout = async () => {
+    try {
+      await apiFetch("/auth/logout", { method: "POST" });
+    } catch(e) {
+      // ignore
+    }
+    setState({ user: null, isLoading: false });
   };
 
   return (

@@ -6,7 +6,14 @@ const { JWT_SECRET, authMiddleware } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+};
+
+router.post('/register', async (req, res, next) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
@@ -19,13 +26,14 @@ router.post('/register', async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id: user._id, email: user.email } });
+    res.cookie('token', token, cookieOptions);
+    res.json({ user: { id: user._id, email: user.email } });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -35,18 +43,25 @@ router.post('/login', async (req, res) => {
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id: user._id, email: user.email } });
+    res.cookie('token', token, cookieOptions);
+    res.json({ user: { id: user._id, email: user.email } });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 });
 
-router.get('/me', authMiddleware, async (req, res) => {
+router.post('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.json({ success: true });
+});
+
+router.get('/me', authMiddleware, async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
+    if (!user) return res.status(401).json({ message: 'User not found' });
     res.json({ user: { id: user._id, email: user.email } });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    next(err);
   }
 });
 

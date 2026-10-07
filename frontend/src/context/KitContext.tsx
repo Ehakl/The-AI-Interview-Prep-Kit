@@ -191,30 +191,25 @@ const KitContext = createContext<KitContextValue | null>(null);
 
 import { useAuth } from "./AuthContext";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+import { apiFetch } from "../utils/apiFetch";
 
 // ─── Provider ─────────────────────────────────────────────────────────────────
 export function KitProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(kitReducer, initialState);
-  const { token } = useAuth();
+  const { user } = useAuth();
   const [isInitializing, setIsInitializing] = React.useState(true);
 
   // Load from DB on mount
   React.useEffect(() => {
     async function loadKit() {
-      if (!token) {
+      if (!user) {
         setIsInitializing(false);
         return;
       }
       try {
-        const res = await fetch(`${API_BASE}/api/kits`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.kits && data.kits.length > 0) {
-            dispatch({ type: "GENERATION_SUCCESS", payload: data.kits[0] });
-          }
+        const data = await apiFetch("/kits");
+        if (data.kits && data.kits.length > 0) {
+          dispatch({ type: "GENERATION_SUCCESS", payload: data.kits[0] });
         }
       } catch (e) {
         console.error("Failed to fetch kit", e);
@@ -223,28 +218,27 @@ export function KitProvider({ children }: { children: ReactNode }) {
       }
     }
     loadKit();
-  }, [token]);
+  }, [user]);
 
-  // Save to DB on change
   React.useEffect(() => {
-    if (!token || isInitializing || state.isGenerating) return;
+    if (!user && !isInitializing) return;
+    if (isInitializing || state.isGenerating) return;
     
     async function saveKit() {
       if (state.kit) {
         try {
           if (state.kit._id) {
-            await fetch(`${API_BASE}/api/kits/${state.kit._id}`, {
+            await apiFetch(`/kits/${state.kit._id}`, {
               method: "PUT",
-              headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ kit: state.kit })
             });
           } else {
-            const res = await fetch(`${API_BASE}/api/kits`, {
+            const data = await apiFetch("/kits", {
               method: "POST",
-              headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ kit: state.kit })
             });
-            const data = await res.json();
             if (data.kit && data.kit._id) {
               dispatch({ type: "GENERATION_SUCCESS", payload: data.kit });
             }
@@ -262,26 +256,20 @@ export function KitProvider({ children }: { children: ReactNode }) {
     // Simple debounce to avoid spamming the DB on every keystroke
     const timeoutId = setTimeout(saveKit, 1000);
     return () => clearTimeout(timeoutId);
-  }, [state.kit, token, isInitializing, state.isGenerating]);
+  }, [state.kit, user, isInitializing, state.isGenerating]);
 
   const generateKit = useCallback(async (jd: string, companyUrl: string, days: number) => {
     dispatch({ type: "GENERATION_START" });
     try {
       dispatch({ type: "GENERATION_STEP", payload: "🔍 Crawling company website..." });
-      const res = await fetch(`${API_BASE}/api/generate`, {
+      const data = await apiFetch("/generate", {
         method: "POST",
-        headers: { "Content-Type": "application/json", ...(token && { Authorization: `Bearer ${token}` }) },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jd, company_url: companyUrl, days_available: days }),
       });
       dispatch({ type: "GENERATION_STEP", payload: "🧠 Extracting requirements..." });
 
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || "Generation failed");
-      }
-
       dispatch({ type: "GENERATION_STEP", payload: "✅ Building your kit..." });
-      const data = await res.json();
       dispatch({ type: "GENERATION_SUCCESS", payload: data.kit });
     } catch (e: unknown) {
       dispatch({ type: "GENERATION_ERROR", payload: (e as Error).message });
@@ -292,13 +280,11 @@ export function KitProvider({ children }: { children: ReactNode }) {
     if (!state.kit) return;
     try {
       const requirements = state.kit.role.requirements;
-      const res = await fetch(`${API_BASE}/api/regenerate-category`, {
+      const data = await apiFetch("/regenerate-category", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ requirements, category }),
       });
-      if (!res.ok) throw new Error("Regeneration failed");
-      const data = await res.json();
       dispatch({ type: "REGENERATE_CATEGORY_SUCCESS", payload: { category, newQuestions: data.questions } });
     } catch (e: unknown) {
       dispatch({ type: "GENERATION_ERROR", payload: (e as Error).message });
