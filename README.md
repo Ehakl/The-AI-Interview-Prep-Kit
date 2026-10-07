@@ -103,14 +103,14 @@ case "REGENERATE_CATEGORY_SUCCESS": {
 
 ### Prerequisites
 - Node.js 20+
-- An OpenAI API key
+- A Google Gemini API key
 
 ### Backend Setup
 
 ```bash
 cd backend
 cp .env.example .env
-# Edit .env and add your OPENAI_API_KEY and optional MONGODB_URI
+# Edit .env and add your GEMINI_API_KEY, JWT_SECRET, and MongoDB variables (MONGO_USER, MONGO_PASSWORD, MONGO_HOST, MONGO_DB)
 npm install
 npm run dev
 # Server runs on http://localhost:4000
@@ -130,20 +130,20 @@ npm run dev
 
 **Backend (Render/Heroku/Railway):**
 1. Connect the `backend/` folder to your deployment platform.
-2. Set Environment Variables: `OPENAI_API_KEY` and `MONGODB_URI`.
+2. Set Environment Variables: `GEMINI_API_KEY`, `JWT_SECRET`, `MONGO_USER`, `MONGO_PASSWORD`, `MONGO_HOST`, and `MONGO_DB`.
 3. Start command: `npm start` (which runs `node src/server.js`).
 
 **Frontend (Vercel):**
 1. Import the `frontend/` folder into Vercel.
-2. Set Environment Variable: `NEXT_PUBLIC_API_URL` to your deployed backend URL (e.g., `https://my-backend.onrender.com`).
+2. Set Environment Variable: `BACKEND_API_URL` to your deployed backend URL (e.g., `https://my-backend.onrender.com/api`).
 3. Vercel will automatically run `npm run build` and deploy.
 
 ---
 
 ## 🧠 LLM Provider & Reasoning
 
-- **Provider**: OpenAI
-- **Model**: `gpt-3.5-turbo`
+- **Provider**: Google Gemini
+- **Model**: `gemini-1.5-flash` (configurable via `GEMINI_MODEL` env var)
 - **Why**: It fits securely within the free tier rate limits (RPM/TPM) while being fast enough to handle the 90-second overall generation budget. It strictly follows the complex JSON schema required by Appendix A.
 
 ---

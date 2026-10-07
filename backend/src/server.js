@@ -6,12 +6,22 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // ─── Environment Validation ──────────────────────────────────────────────────
-const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'];
+const requiredEnvVars = ['JWT_SECRET'];
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
     console.error(`[Fatal] Missing required environment variable: ${envVar}`);
     process.exit(1);
   }
+}
+
+let mongoUri = process.env.MONGODB_URI;
+if (!mongoUri) {
+  const { MONGO_USER, MONGO_PASSWORD, MONGO_HOST, MONGO_DB } = process.env;
+  if (!MONGO_USER || !MONGO_PASSWORD || !MONGO_HOST || !MONGO_DB) {
+    console.error('[Fatal] Missing MongoDB configuration. Provide either MONGODB_URI, or MONGO_USER, MONGO_PASSWORD, MONGO_HOST, and MONGO_DB.');
+    process.exit(1);
+  }
+  mongoUri = `mongodb+srv://${encodeURIComponent(MONGO_USER)}:${encodeURIComponent(MONGO_PASSWORD)}@${MONGO_HOST}/${MONGO_DB}?retryWrites=true&w=majority`;
 }
 
 const PipelineRunner = require('./services/PipelineRunner');
@@ -32,7 +42,7 @@ app.use((err, req, res, next) => {
 });
 
 // ─── Database ──────────────────────────────────────────────────────────────────
-mongoose.connect(process.env.MONGODB_URI, { family: 4 })
+mongoose.connect(mongoUri, { family: 4 })
   .then(() => console.log('[Server] MongoDB connected'))
   .catch(err => {
     console.error('[Fatal] MongoDB connection failed:', err.message);
