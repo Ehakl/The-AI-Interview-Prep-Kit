@@ -96,10 +96,12 @@ app.post('/api/regenerate-category', async (req, res, next) => {
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  const isConnected = mongoose.connection.readyState === 1;
+  const status = isConnected ? 200 : 503;
+  res.status(status).json({ 
+    status: isConnected ? 'ok' : 'error', 
     timestamp: new Date().toISOString(),
-    db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    db: isConnected ? 'connected' : 'disconnected'
   });
 });
 

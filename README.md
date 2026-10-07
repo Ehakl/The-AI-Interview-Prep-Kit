@@ -227,3 +227,11 @@ Tests cover:
 - **Prompt Injection Defense**: Scraped text is injected into prompts with clear contextual separators. The LLM is instructed to treat scraped text as static content only.
 - **Rate Limit Resilience**: `LLMService.callWithRetry()` catches 429 errors and backs off exponentially (2s, 4s, 6s) before retrying up to 3 times.
 - **URL Validation**: `WebCrawler` wraps all fetches in try/catch and returns `null` on failure instead of crashing.
+
+---
+
+## 🔑 Demo Account
+
+If you want to try out the live site without registering a new account, use the following demo credentials:
+- **Email:** `demo@example.com`
+- **Password:** `demo123`

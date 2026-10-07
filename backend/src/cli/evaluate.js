@@ -45,7 +45,7 @@ async function runBatch() {
       // Validate Edge Case: "The user asks for a 1-day schedule, or a 60-day one"
       let days = c.days;
       if (days < 1) days = 1;
-      if (days > 30) days = 30; // Cap reasonable prep time
+      if (days > 60) days = 60; // Cap reasonable prep time to 60 days
 
       const kit = await runner.run(c.jd, c.company_url, days);
       

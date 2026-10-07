@@ -1,24 +1,1856 @@
 {
   "version": "1.0",
-  "generated_at": "2026-10-06T11:53:35.857Z",
+  "generated_at": "2026-10-07T07:22:26.153Z",
   "kits": [
     {
-      "id": "case-01",
-      "status": "failed",
-      "kit": null,
-      "error": {
-        "code": "GENERATION_FAILED",
-        "message": "Google API Error: {\"error\":{\"code\":503,\"message\":\"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\"status\":\"UNAVAILABLE\"}}"
-      }
+      "id": "case-01-bad-url",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "this-url-definitely-does-not-exist-12345.com",
+          "company_url": "https://this-url-definitely-does-not-exist-12345.com",
+          "role": "Senior Backend Engineer",
+          "location": "",
+          "jd_chars": 188,
+          "researched_at": "2026-10-07T07:23:50.672Z",
+          "pages_used": []
+        },
+        "company_brief": {
+          "summary": "Not provided",
+          "what_they_do": "Not provided",
+          "sources": []
+        },
+        "role": {
+          "title": "Senior Backend Engineer",
+          "seniority": "Senior",
+          "responsibilities": [
+            "Develop and maintain backend services using Node.js",
+            "Manage and interact with MongoDB databases",
+            "Build and maintain web applications using Express"
+          ],
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "5+ years of experience with Node.js",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r2",
+              "text": "Experience with MongoDB",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r3",
+              "text": "Experience with Express",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r4",
+              "text": "System design experience",
+              "kind": "technical",
+              "priority": "nice"
+            }
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "How do you handle memory leaks in a long-running Node.js application, and what tools have you used to diagnose them over your 5+ years of experience?",
+            "answer_outline": "Mention heap snapshots, Chrome DevTools, clinic.js, or memwatch. Discuss identifying detached closures, global variable accumulation, or event listener leaks.",
+            "difficulty": 4
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "Explain the Node.js event loop architecture and how you optimize performance for CPU-intensive tasks without blocking the main thread.",
+            "answer_outline": "Explain phases (timers, pending callbacks, poll, check, close). Discuss worker threads, child processes, or offloading to message queues.",
+            "difficulty": 5
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "Describe a scenario where you had to optimize a MongoDB query. What indexes did you use and why?",
+            "answer_outline": "Discuss explain() plans, compound indexes, covering indexes, and avoiding collection scans.",
+            "difficulty": 3
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "How do you handle data consistency in MongoDB when performing multi-document transactions?",
+            "answer_outline": "Explain ACID transactions, session management, and the trade-offs between performance and strict consistency.",
+            "difficulty": 4
+          },
+          {
+            "id": "q5",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "technical",
+            "prompt": "How do you structure middleware in Express to handle authentication and error handling globally?",
+            "answer_outline": "Discuss app.use() for global middleware, custom error-handling middleware with four arguments (err, req, res, next), and modularizing routes.",
+            "difficulty": 2
+          },
+          {
+            "id": "q6",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "technical",
+            "prompt": "What are the security best practices you implement when building an Express API?",
+            "answer_outline": "Mention helmet.js, rate limiting, input validation (Joi/Zod), CORS configuration, and avoiding exposing stack traces.",
+            "difficulty": 3
+          },
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "system-design",
+            "prompt": "How would you architect a high-concurrency Node.js service to handle 100k+ concurrent connections while maintaining low latency?",
+            "answer_outline": "Discuss event loop non-blocking I/O, clustering/worker threads for CPU-bound tasks, load balancing strategies, and horizontal scaling of Node.js instances.",
+            "difficulty": 3
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "system-design",
+            "prompt": "Explain the tradeoffs of using a microservices architecture versus a monolithic architecture when building a large-scale Node.js application.",
+            "answer_outline": "Discuss deployment complexity, inter-service communication (gRPC/REST), shared state management, and the impact on Node.js memory management.",
+            "difficulty": 3
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "system-design",
+            "prompt": "Design a schema strategy for a MongoDB-backed system that requires high write throughput. How do you handle indexing and sharding?",
+            "answer_outline": "Discuss document modeling (embedding vs. referencing), shard key selection, index optimization, and the impact of write concerns on performance.",
+            "difficulty": 3
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "system-design",
+            "prompt": "How would you implement a caching layer in front of a MongoDB database to reduce read latency in a distributed system?",
+            "answer_outline": "Discuss cache-aside patterns, TTL strategies, handling cache invalidation, and consistency tradeoffs between Redis and MongoDB.",
+            "difficulty": 2
+          },
+          {
+            "id": "q5",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "system-design",
+            "prompt": "When designing an Express-based API, how do you structure middleware to ensure scalability and maintainability across multiple services?",
+            "answer_outline": "Discuss modular middleware design, error handling patterns, request validation, and offloading heavy processing to background workers.",
+            "difficulty": 2
+          },
+          {
+            "id": "q6",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "system-design",
+            "prompt": "How would you secure an Express-based system design against common vulnerabilities like DDoS and injection attacks?",
+            "answer_outline": "Discuss rate limiting, helmet.js, input sanitization, JWT/OAuth2 implementation, and API gateway integration.",
+            "difficulty": 2
+          },
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "company-fit",
+            "prompt": "Over your 5+ years of working in the Node.js ecosystem, how have your engineering philosophy and approach to mentoring junior engineers evolved to support a positive team culture?",
+            "answer_outline": "Discuss career progression from individual contributor to senior peer; describe establishing healthy code review practices, mentoring others in asynchronous programming/best practices, and fostering a psychologically safe, collaborative environment.",
+            "difficulty": 3
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "company-fit",
+            "prompt": "What kind of team culture and engineering mission keeps you energized when building backend services in Node.js, and how does that align with your long-term career goals?",
+            "answer_outline": "Highlight alignment with user-focused product delivery, values such as continuous learning and technical ownership, and how sustained expertise in Node.js translates into business value and collaborative leadership.",
+            "difficulty": 2
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "company-fit",
+            "prompt": "When making decisions around adopting or structuring MongoDB in a production setting, how do you manage cross-functional alignment and differing opinions among team members?",
+            "answer_outline": "Describe constructive dialogue, relying on data/benchmarks rather than ego, building consensus around business requirements and data modeling, and respecting differing architectural viewpoints.",
+            "difficulty": 3
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "company-fit",
+            "prompt": "How do you champion data integrity, reliability, and proactive maintenance in MongoDB while balancing rapid product delivery demanded by company goals?",
+            "answer_outline": "Explain trade-offs between rapid iteration and technical debt, demonstrating shared responsibility, transparency with product managers about schema evolution, and aligning engineering rigor with company priorities.",
+            "difficulty": 3
+          },
+          {
+            "id": "q5",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "company-fit",
+            "prompt": "In an Express-based environment where there is no rigid framework structure, how do you promote shared standards, consistency, and team ownership across the codebase?",
+            "answer_outline": "Emphasize collaboration in defining architectural conventions, middleware patterns, documentation, and leading team discussions to avoid fragmented coding styles while respecting developer autonomy.",
+            "difficulty": 2
+          },
+          {
+            "id": "q6",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "company-fit",
+            "prompt": "How does your experience maintaining web APIs in Express reflect your personal values regarding technical simplicity, maintainability, and empathy for fellow developers?",
+            "answer_outline": "Discuss favoring clear, maintainable patterns over unnecessary complexity, ensuring onboarding ease for new teammates, and cultivating an engineering culture centered on clarity and mutual support.",
+            "difficulty": 2
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "f1",
+            "front": "What is the primary purpose of the 'next' function in Express middleware?",
+            "back": "It passes control to the next middleware function in the stack; if not called, the request will be left hanging.",
+            "requirement_ids": [
+              "r3"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "What is a covered query in MongoDB?",
+            "back": "A query where all fields in the query and the projection are part of the same index, allowing MongoDB to return results without inspecting the actual documents.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f3",
+            "front": "What is the difference between process.nextTick() and setImmediate() in Node.js?",
+            "back": "process.nextTick() fires immediately after the current operation completes (before the event loop continues), while setImmediate() fires in the 'check' phase of the event loop.",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f1",
+            "front": "What is the primary benefit of using the Cluster module in Node.js for system design?",
+            "back": "It allows the creation of child processes that share server ports, enabling the application to utilize multi-core systems and improve throughput.",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "What is the main advantage of MongoDB's sharding in a high-scale system?",
+            "back": "It allows horizontal scaling by distributing data across multiple servers, preventing any single node from becoming a bottleneck for storage or throughput.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f3",
+            "front": "Why is it recommended to offload heavy computation from the main Express request-response cycle?",
+            "back": "Because Node.js is single-threaded; blocking the event loop with heavy computation prevents the server from handling other incoming requests.",
+            "requirement_ids": [
+              "r3"
+            ]
+          },
+          {
+            "id": "f1",
+            "front": "Company-Fit: How should you frame 5+ years of senior Node.js experience in a culture fit interview?",
+            "back": "Focus on mentorship, code review empathy, architectural stewardship, continuous learning, and driving cross-team alignment rather than just technical syntax.",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "Company-Fit: How do you demonstrate alignment with company goals when discussing database choices like MongoDB?",
+            "back": "Emphasize balancing business velocity with data integrity, practicing transparent communication with stakeholders, and handling technical disagreements collaboratively.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f3",
+            "front": "Company-Fit: How does building applications with Express demonstrate developer empathy and teamwork?",
+            "back": "Because Express is unopinionated, it highlights your ability to establish clear conventions, maintain thorough documentation, and foster shared ownership across the engineering team.",
+            "requirement_ids": [
+              "r3"
+            ]
+          }
+        ],
+        "schedule": {
+          "days_available": 5,
+          "days": [
+            {
+              "day": 1,
+              "focus": "5+ years of experience with Node.js",
+              "question_ids": [
+                "q2",
+                "q1",
+                "q4",
+                "q3"
+              ],
+              "minutes": 240
+            },
+            {
+              "day": 2,
+              "focus": "5+ years of experience with Node.js",
+              "question_ids": [
+                "q6",
+                "q1",
+                "q2",
+                "q3"
+              ],
+              "minutes": 180
+            },
+            {
+              "day": 3,
+              "focus": "Experience with MongoDB",
+              "question_ids": [
+                "q1",
+                "q3",
+                "q4"
+              ],
+              "minutes": 135
+            },
+            {
+              "day": 4,
+              "focus": "Experience with Express",
+              "question_ids": [
+                "q5",
+                "q4",
+                "q5",
+                "q6"
+              ],
+              "minutes": 120
+            },
+            {
+              "day": 5,
+              "focus": "Experience with Express",
+              "question_ids": [
+                "q2",
+                "q5",
+                "q6"
+              ],
+              "minutes": 90
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [
+            "r4"
+          ],
+          "passes": 1
+        }
+      },
+      "error": null
     },
     {
-      "id": "case-02",
-      "status": "failed",
-      "kit": null,
-      "error": {
-        "code": "GENERATION_FAILED",
-        "message": "Google API Error: {\"error\":{\"code\":429,\"message\":\"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.8-flash\\nPlease retry in 12h3m0.926749937s.\",\"status\":\"RESOURCE_EXHAUSTED\",\"details\":[{\"@type\":\"type.googleapis.com/google.rpc.Help\",\"links\":[{\"description\":\"Learn more about Gemini API quotas\",\"url\":\"https://ai.google.dev/gemini-api/docs/rate-limits\"}]},{\"@type\":\"type.googleapis.com/google.rpc.QuotaFailure\",\"violations\":[{\"quotaMetric\":\"generativelanguage.googleapis.com/generate_content_free_tier_requests\",\"quotaId\":\"GenerateRequestsPerDayPerProjectPerModel-FreeTier\",\"quotaDimensions\":{\"location\":\"global\",\"model\":\"gemini-3.8-flash\"},\"quotaValue\":\"20\"}]},{\"@type\":\"type.googleapis.com/google.rpc.RetryInfo\",\"retryDelay\":\"43380s\"}]}}"
-      }
+      "id": "case-02-no-hiring-page",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "example.com",
+          "company_url": "https://example.com",
+          "role": "Frontend Developer",
+          "location": "",
+          "jd_chars": 82,
+          "researched_at": "2026-10-07T07:24:04.465Z",
+          "pages_used": [
+            "https://example.com"
+          ]
+        },
+        "company_brief": {
+          "summary": "The company context provided is a placeholder example domain.",
+          "what_they_do": "Not specified",
+          "sources": [
+            "https://example.com"
+          ]
+        },
+        "role": {
+          "title": "Frontend Developer",
+          "seniority": "Not specified",
+          "responsibilities": [
+            "Develop frontend components",
+            "Work in a fast-paced startup environment"
+          ],
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "React",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r2",
+              "text": "Tailwind CSS",
+              "kind": "technical",
+              "priority": "must"
+            }
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "Explain the difference between state and props in React and when to use each.",
+            "answer_outline": "Props are read-only data passed from parent to child; state is managed internally within the component and is mutable. Use props for configuration and state for data that changes over time.",
+            "difficulty": 2
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "What is the purpose of the useEffect hook and how do you control when it runs?",
+            "answer_outline": "useEffect handles side effects (data fetching, subscriptions, DOM updates). It runs based on the dependency array: empty array runs once on mount, array with variables runs when those variables change, no array runs on every render.",
+            "difficulty": 3
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "How does Tailwind CSS differ from traditional CSS or CSS-in-JS libraries?",
+            "answer_outline": "Tailwind is a utility-first CSS framework that provides low-level utility classes. It avoids writing custom CSS files by composing styles directly in the markup, leading to faster development and smaller bundle sizes.",
+            "difficulty": 2
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "Explain how to handle responsive design using Tailwind CSS utility classes.",
+            "answer_outline": "Tailwind uses mobile-first responsive prefixes (sm:, md:, lg:, xl:, 2xl:). You apply these prefixes to utility classes to change styles at specific breakpoints (e.g., 'w-full md:w-1/2').",
+            "difficulty": 2
+          },
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "behavioural",
+            "prompt": "Tell me about a time you had to troubleshoot a complex React state management issue under a tight deadline. How did you handle the pressure and collaborate with your team?",
+            "answer_outline": "Use STAR method: Situation (complex state bug), Task (fix before deadline), Action (isolated the component, used React DevTools, communicated with team to avoid merge conflicts), Result (resolved issue, improved state structure).",
+            "difficulty": 3
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "behavioural",
+            "prompt": "Describe a situation where you disagreed with a team member regarding a React architectural decision. How did you resolve the conflict?",
+            "answer_outline": "Use STAR method: Situation (disagreement on component structure), Task (reach consensus), Action (listened to their perspective, presented data/performance benefits, compromised or sought lead input), Result (agreed on a scalable solution, maintained positive relationship).",
+            "difficulty": 3
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "behavioural",
+            "prompt": "Tell me about a time you had to advocate for adopting Tailwind CSS in a project where the team was hesitant. How did you persuade them?",
+            "answer_outline": "Use STAR method: Situation (team preferred traditional CSS), Task (improve styling workflow), Action (demonstrated rapid prototyping, showed maintainability benefits, addressed concerns about utility-class readability), Result (team adopted Tailwind, increased development speed).",
+            "difficulty": 3
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "behavioural",
+            "prompt": "Describe a project where you had to maintain a large Tailwind CSS codebase. How did you ensure consistency and teamwork while scaling the styles?",
+            "answer_outline": "Use STAR method: Situation (large project, inconsistent classes), Task (standardize styling), Action (implemented design tokens, created shared component library, established code review guidelines), Result (improved consistency, reduced technical debt).",
+            "difficulty": 3
+          },
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "system-design",
+            "prompt": "How would you architect a large-scale React application to ensure high performance and maintainability as the codebase grows?",
+            "answer_outline": "Discuss component composition, state management strategies (Context API vs Redux/Zustand), code splitting with React.lazy/Suspense, and memoization techniques (useMemo, useCallback) to prevent unnecessary re-renders.",
+            "difficulty": 3
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "system-design",
+            "prompt": "Explain the tradeoffs between Server-Side Rendering (SSR) and Client-Side Rendering (CSR) in a React-based system architecture.",
+            "answer_outline": "Compare SEO benefits and initial load time (SSR) against interactivity and server load (CSR). Mention frameworks like Next.js as a hybrid solution.",
+            "difficulty": 3
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "system-design",
+            "prompt": "How does the utility-first approach of Tailwind CSS impact the build process and bundle size in a large-scale system?",
+            "answer_outline": "Explain how Tailwind's JIT (Just-In-Time) compiler generates CSS on demand, resulting in smaller production bundles compared to traditional CSS-in-JS libraries that inject styles at runtime.",
+            "difficulty": 2
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "system-design",
+            "prompt": "What are the architectural benefits of using Tailwind CSS for design system consistency in a multi-team environment?",
+            "answer_outline": "Discuss the use of a centralized configuration file (tailwind.config.js) to enforce design tokens (colors, spacing, typography) across different teams, reducing CSS bloat and preventing style conflicts.",
+            "difficulty": 2
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "f1",
+            "front": "What is the virtual DOM in React?",
+            "back": "A lightweight copy of the actual DOM that React uses to calculate the most efficient way to update the UI by comparing the new virtual DOM with the previous one (diffing).",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "What is the primary benefit of using Tailwind's JIT (Just-In-Time) compiler?",
+            "back": "It generates CSS on-demand as you author your HTML, resulting in faster build times and the ability to use arbitrary values without configuring the theme.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f1",
+            "front": "What is the STAR method for behavioural interviews?",
+            "back": "Situation, Task, Action, Result. A structured technique to provide concise and impactful answers to behavioural questions.",
+            "requirement_ids": [
+              "r1",
+              "r2"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "How do you handle technical disagreements in a React team?",
+            "back": "Focus on objective data, performance metrics, and maintainability rather than personal preference. Always prioritize the project's long-term health and team cohesion.",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f3",
+            "front": "How do you communicate the benefits of Tailwind CSS to non-technical stakeholders or skeptical team members?",
+            "back": "Focus on the 'Result' aspect: faster development cycles, reduced bundle sizes, and improved consistency across the UI.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f1",
+            "front": "What is the primary benefit of using React.lazy and Suspense in a system design context?",
+            "back": "They enable code-splitting, which reduces the initial bundle size by loading components only when they are needed, improving application load performance.",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "How does Tailwind CSS handle unused CSS in production builds?",
+            "back": "Tailwind uses a JIT (Just-In-Time) compiler that scans HTML/JS files and generates only the CSS classes actually used, automatically purging unused styles.",
+            "requirement_ids": [
+              "r2"
+            ]
+          }
+        ],
+        "schedule": {
+          "days_available": 5,
+          "days": [
+            {
+              "day": 1,
+              "focus": "React",
+              "question_ids": [
+                "q2",
+                "q1",
+                "q2"
+              ],
+              "minutes": 135
+            },
+            {
+              "day": 2,
+              "focus": "Tailwind CSS",
+              "question_ids": [
+                "q3",
+                "q4"
+              ],
+              "minutes": 90
+            },
+            {
+              "day": 3,
+              "focus": "React",
+              "question_ids": [
+                "q1",
+                "q2",
+                "q1"
+              ],
+              "minutes": 120
+            },
+            {
+              "day": 4,
+              "focus": "Tailwind CSS",
+              "question_ids": [
+                "q3",
+                "q4"
+              ],
+              "minutes": 60
+            },
+            {
+              "day": 5,
+              "focus": "Tailwind CSS",
+              "question_ids": [
+                "q3",
+                "q4"
+              ],
+              "minutes": 60
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "case-03-two-line-jd",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "example.com",
+          "company_url": "https://example.com",
+          "role": "Invalid Job Description",
+          "location": "",
+          "jd_chars": 27,
+          "researched_at": "2026-10-07T07:24:04.532Z",
+          "pages_used": [
+            "https://example.com"
+          ]
+        },
+        "company_brief": {
+          "summary": "No valid job description provided.",
+          "what_they_do": "",
+          "sources": [
+            "https://example.com"
+          ]
+        },
+        "role": {
+          "title": "Invalid Job Description",
+          "seniority": "",
+          "responsibilities": [],
+          "requirements": []
+        },
+        "questions": [
+          {
+            "id": "warning-q-1",
+            "requirement_ids": [],
+            "category": "company-fit",
+            "prompt": "Notice: Job Description Invalid",
+            "answer_outline": "The job description is too short (under 50 characters). Please provide a real job posting.",
+            "difficulty": 1
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "warning-f-1",
+            "requirement_ids": [],
+            "front": "Notice: Invalid Job Description",
+            "back": "The job description is too short (under 50 characters). Please provide a real job posting.",
+            "confidence_score": 0
+          }
+        ],
+        "schedule": {
+          "days_available": 5,
+          "days": [
+            {
+              "day": 1,
+              "focus": "Mixed Review",
+              "question_ids": [
+                "warning-q-1"
+              ],
+              "minutes": 15
+            },
+            {
+              "day": 2,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 3,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 4,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 5,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "case-04-no-discussion-found",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "example.com",
+          "company_url": "https://example.com",
+          "role": "Data Scientist",
+          "location": "",
+          "jd_chars": 54,
+          "researched_at": "2026-10-07T07:24:15.837Z",
+          "pages_used": [
+            "https://example.com"
+          ]
+        },
+        "company_brief": {
+          "summary": "The company context provided is a placeholder domain used for documentation examples.",
+          "what_they_do": "Not specified",
+          "sources": [
+            "https://example.com"
+          ]
+        },
+        "role": {
+          "title": "Data Scientist",
+          "seniority": "Not specified",
+          "responsibilities": [],
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Python",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r2",
+              "text": "pandas",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r3",
+              "text": "PyTorch",
+              "kind": "technical",
+              "priority": "must"
+            }
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "Explain the difference between a list and a tuple in Python and provide a use case for each.",
+            "answer_outline": "Lists are mutable, defined with [], used for collections of items that may change. Tuples are immutable, defined with (), used for fixed data structures or dictionary keys.",
+            "difficulty": 2
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "What are decorators in Python and how do they work?",
+            "answer_outline": "Decorators are functions that take another function as an argument and extend its behavior without explicitly modifying it. They use the @syntax.",
+            "difficulty": 3
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "How do you handle missing data in a pandas DataFrame?",
+            "answer_outline": "Use methods like .isnull() to identify, .dropna() to remove rows/columns, or .fillna() to impute values with mean, median, or constant values.",
+            "difficulty": 2
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "Explain the difference between .loc and .iloc in pandas.",
+            "answer_outline": ".loc is label-based indexing (accessing by row/column names). .iloc is integer-position based indexing (accessing by index numbers).",
+            "difficulty": 2
+          },
+          {
+            "id": "q5",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "technical",
+            "prompt": "What is the role of 'autograd' in PyTorch?",
+            "answer_outline": "Autograd is PyTorch's automatic differentiation engine. It records operations on tensors to compute gradients automatically during backpropagation.",
+            "difficulty": 3
+          },
+          {
+            "id": "q6",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "technical",
+            "prompt": "Why is it necessary to call optimizer.zero_grad() in a PyTorch training loop?",
+            "answer_outline": "PyTorch accumulates gradients on subsequent backward passes. Calling zero_grad() clears the old gradients so they don't interfere with the current step.",
+            "difficulty": 3
+          },
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "system-design",
+            "prompt": "How would you design a high-concurrency Python-based microservice to handle thousands of requests per second, and what architectural patterns would you use to mitigate the Global Interpreter Lock (GIL)?",
+            "answer_outline": "Discuss using asynchronous frameworks like FastAPI or Sanic, leveraging multi-processing instead of multi-threading for CPU-bound tasks, and offloading heavy computation to background task queues like Celery or Redis Queue.",
+            "difficulty": 3
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "system-design",
+            "prompt": "When designing a distributed system in Python, how do you handle service-to-service communication and serialization to ensure low latency?",
+            "answer_outline": "Mention using gRPC with Protocol Buffers for efficient binary serialization, implementing connection pooling, and using asynchronous I/O to prevent blocking during network calls.",
+            "difficulty": 3
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "system-design",
+            "prompt": "How would you architect a data processing pipeline that uses pandas for transformation, considering memory constraints when dealing with datasets larger than RAM?",
+            "answer_outline": "Discuss chunking strategies, using Dask for parallel computing, or offloading transformations to a distributed engine like Apache Spark while using pandas for local node-level processing.",
+            "difficulty": 3
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "system-design",
+            "prompt": "In a system design scenario involving real-time analytics, how would you integrate pandas-based data cleaning into a streaming architecture?",
+            "answer_outline": "Explain the use of a message broker (Kafka), micro-batching with tools like Spark Streaming or Flink, and applying pandas transformations within the worker nodes of the stream processor.",
+            "difficulty": 3
+          },
+          {
+            "id": "q5",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "system-design",
+            "prompt": "Design a scalable inference service for PyTorch models. How do you handle model versioning, GPU resource allocation, and request batching?",
+            "answer_outline": "Discuss using TorchServe or NVIDIA Triton, implementing dynamic batching to increase throughput, using Kubernetes for auto-scaling based on GPU metrics, and model registry patterns.",
+            "difficulty": 4
+          },
+          {
+            "id": "q6",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "system-design",
+            "prompt": "How would you design a distributed training architecture for PyTorch models to handle massive datasets across multiple nodes?",
+            "answer_outline": "Explain DistributedDataParallel (DDP), parameter servers vs. ring-allreduce, data sharding strategies, and the role of high-speed interconnects like NCCL.",
+            "difficulty": 4
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "f1",
+            "front": "What is the primary difference between Python lists and tuples?",
+            "back": "Lists are mutable (can be changed), while tuples are immutable (cannot be changed).",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "Which pandas method is used to combine two DataFrames based on a common key?",
+            "back": "pd.merge()",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f3",
+            "front": "What is a Tensor in PyTorch?",
+            "back": "A multi-dimensional array that supports automatic differentiation and can be moved to GPU for computation.",
+            "requirement_ids": [
+              "r3"
+            ]
+          },
+          {
+            "id": "f1",
+            "front": "How can you bypass the Python GIL in a high-performance system design?",
+            "back": "Use multi-processing (separate memory spaces), C-extensions (releasing the GIL in C code), or offloading tasks to external services/workers.",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "What is the primary limitation of using pandas in a distributed system design?",
+            "back": "Pandas is single-threaded and memory-bound; it cannot natively scale across multiple machines without external orchestration like Dask or Ray.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f3",
+            "front": "What is 'Dynamic Batching' in the context of a PyTorch inference service?",
+            "back": "A technique where the server collects multiple individual inference requests over a very short time window and processes them as a single batch to maximize GPU utilization.",
+            "requirement_ids": [
+              "r3"
+            ]
+          }
+        ],
+        "schedule": {
+          "days_available": 5,
+          "days": [
+            {
+              "day": 1,
+              "focus": "PyTorch",
+              "question_ids": [
+                "q5",
+                "q6",
+                "q2"
+              ],
+              "minutes": 165
+            },
+            {
+              "day": 2,
+              "focus": "PyTorch",
+              "question_ids": [
+                "q5",
+                "q6"
+              ],
+              "minutes": 90
+            },
+            {
+              "day": 3,
+              "focus": "Python",
+              "question_ids": [
+                "q1",
+                "q2",
+                "q3"
+              ],
+              "minutes": 135
+            },
+            {
+              "day": 4,
+              "focus": "Pandas",
+              "question_ids": [
+                "q4",
+                "q1"
+              ],
+              "minutes": 75
+            },
+            {
+              "day": 5,
+              "focus": "Pandas",
+              "question_ids": [
+                "q3",
+                "q4"
+              ],
+              "minutes": 60
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "case-05-invalid-model-json",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "example.com",
+          "company_url": "https://example.com",
+          "role": "Python Developer",
+          "location": "",
+          "jd_chars": 99,
+          "researched_at": "2026-10-07T07:24:25.684Z",
+          "pages_used": [
+            "https://example.com"
+          ]
+        },
+        "company_brief": {
+          "summary": "The company provides documentation examples and is not a service for testing or monitoring.",
+          "what_they_do": "Documentation examples",
+          "sources": [
+            "https://example.com"
+          ]
+        },
+        "role": {
+          "title": "Python Developer",
+          "seniority": "Not specified",
+          "responsibilities": [],
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Must know Python",
+              "kind": "technical",
+              "priority": "must"
+            }
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "Explain the difference between a list and a tuple in Python, and provide a use case for each.",
+            "answer_outline": "Lists are mutable, defined with [], used for collections of items that may change. Tuples are immutable, defined with (), used for fixed data structures or as dictionary keys.",
+            "difficulty": 2
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "What are decorators in Python and how do they work?",
+            "answer_outline": "Decorators are functions that take another function as an argument and extend its behavior without explicitly modifying it. They use the @syntax.",
+            "difficulty": 3
+          },
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "system-design",
+            "prompt": "How would you design a high-throughput task queue system in Python, and what are the trade-offs of using Python's Global Interpreter Lock (GIL) in this architecture?",
+            "answer_outline": "Discuss using distributed task queues like Celery or RQ. Explain the GIL's impact on CPU-bound tasks versus I/O-bound tasks. Suggest using multiprocessing or external worker nodes to bypass the GIL for scalability.",
+            "difficulty": 3
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "system-design",
+            "prompt": "When designing a microservice in Python, how do you handle asynchronous communication between services, and what libraries would you choose to ensure scalability?",
+            "answer_outline": "Discuss using frameworks like FastAPI or Sanic for asynchronous I/O. Mention message brokers like RabbitMQ or Kafka. Explain the benefits of non-blocking code in Python for handling high concurrency.",
+            "difficulty": 3
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "f1",
+            "front": "What is the primary difference between a list and a tuple in Python?",
+            "back": "Lists are mutable (can be changed), while tuples are immutable (cannot be changed after creation).",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "What is a Python generator?",
+            "back": "A function that returns an iterator using the 'yield' keyword, allowing for lazy evaluation and memory efficiency.",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f1",
+            "front": "How does the Python GIL affect the scalability of a CPU-bound system design?",
+            "back": "The GIL prevents multiple native threads from executing Python bytecodes at once, meaning CPU-bound tasks cannot leverage multi-core processors via threading. Scalability must be achieved through multiprocessing or distributed worker architectures.",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "What is the primary advantage of using an asynchronous framework like FastAPI in a Python-based system design?",
+            "back": "It allows the system to handle many concurrent I/O-bound connections (like database queries or API calls) without blocking the main execution thread, significantly improving throughput and resource utilization.",
+            "requirement_ids": [
+              "r1"
+            ]
+          }
+        ],
+        "schedule": {
+          "days_available": 5,
+          "days": [
+            {
+              "day": 1,
+              "focus": "Must know Python",
+              "question_ids": [
+                "q2"
+              ],
+              "minutes": 45
+            },
+            {
+              "day": 2,
+              "focus": "Must know Python",
+              "question_ids": [
+                "q1"
+              ],
+              "minutes": 45
+            },
+            {
+              "day": 3,
+              "focus": "Must know Python",
+              "question_ids": [
+                "q2"
+              ],
+              "minutes": 45
+            },
+            {
+              "day": 4,
+              "focus": "Must know Python",
+              "question_ids": [
+                "q1"
+              ],
+              "minutes": 30
+            },
+            {
+              "day": 5,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "case-06-rate-limit",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "example.com",
+          "company_url": "https://example.com",
+          "role": "Software Engineer",
+          "location": "",
+          "jd_chars": 81,
+          "researched_at": "2026-10-07T07:24:27.453Z",
+          "pages_used": [
+            "https://example.com"
+          ]
+        },
+        "company_brief": {
+          "summary": "The company context provided is a placeholder domain used for documentation examples.",
+          "what_they_do": "Not specified",
+          "sources": [
+            "https://example.com"
+          ]
+        },
+        "role": {
+          "title": "Software Engineer",
+          "seniority": "Not specified",
+          "responsibilities": [
+            "Build scalable systems"
+          ],
+          "requirements": []
+        },
+        "questions": [],
+        "flashcards": [],
+        "schedule": {
+          "days_available": 5,
+          "days": [
+            {
+              "day": 1,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 2,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 3,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 4,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 5,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "case-07-1-day-schedule",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "example.com",
+          "company_url": "https://example.com",
+          "role": "Invalid Job Description",
+          "location": "",
+          "jd_chars": 41,
+          "researched_at": "2026-10-07T07:24:27.470Z",
+          "pages_used": [
+            "https://example.com"
+          ]
+        },
+        "company_brief": {
+          "summary": "No valid job description provided.",
+          "what_they_do": "",
+          "sources": [
+            "https://example.com"
+          ]
+        },
+        "role": {
+          "title": "Invalid Job Description",
+          "seniority": "",
+          "responsibilities": [],
+          "requirements": []
+        },
+        "questions": [
+          {
+            "id": "warning-q-1",
+            "requirement_ids": [],
+            "category": "company-fit",
+            "prompt": "Notice: Job Description Invalid",
+            "answer_outline": "The job description is too short (under 50 characters). Please provide a real job posting.",
+            "difficulty": 1
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "warning-f-1",
+            "requirement_ids": [],
+            "front": "Notice: Invalid Job Description",
+            "back": "The job description is too short (under 50 characters). Please provide a real job posting.",
+            "confidence_score": 0
+          }
+        ],
+        "schedule": {
+          "days_available": 1,
+          "days": [
+            {
+              "day": 1,
+              "focus": "Mixed Review",
+              "question_ids": [
+                "warning-q-1"
+              ],
+              "minutes": 15
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "case-08-60-day-schedule",
+      "status": "ok",
+      "kit": {
+        "source": {
+          "company": "example.com",
+          "company_url": "https://example.com",
+          "role": "Machine Learning Engineer",
+          "location": "",
+          "jd_chars": 63,
+          "researched_at": "2026-10-07T07:24:35.289Z",
+          "pages_used": [
+            "https://example.com"
+          ]
+        },
+        "company_brief": {
+          "summary": "The company context provided is a placeholder domain for documentation examples.",
+          "what_they_do": "Not specified",
+          "sources": [
+            "https://example.com"
+          ]
+        },
+        "role": {
+          "title": "Machine Learning Engineer",
+          "seniority": "Not specified",
+          "responsibilities": [],
+          "requirements": [
+            {
+              "id": "r1",
+              "text": "Python",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r2",
+              "text": "PyTorch",
+              "kind": "technical",
+              "priority": "must"
+            },
+            {
+              "id": "r3",
+              "text": "CUDA",
+              "kind": "technical",
+              "priority": "must"
+            }
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "Explain the difference between a list and a tuple in Python, and describe a scenario where you would prefer one over the other.",
+            "answer_outline": "Lists are mutable, tuples are immutable. Lists use more memory; tuples are faster for iteration and can be used as dictionary keys if they contain immutable elements.",
+            "difficulty": 2
+          },
+          {
+            "id": "q2",
+            "requirement_ids": [
+              "r1"
+            ],
+            "category": "technical",
+            "prompt": "How do decorators work in Python, and can you provide an example of a practical use case?",
+            "answer_outline": "Decorators are functions that modify the behavior of another function. Use cases include logging, access control, or caching.",
+            "difficulty": 3
+          },
+          {
+            "id": "q3",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "What is the purpose of 'autograd' in PyTorch, and how does it handle backpropagation?",
+            "answer_outline": "Autograd is PyTorch's automatic differentiation engine. It tracks operations on tensors to build a computational graph and computes gradients automatically.",
+            "difficulty": 3
+          },
+          {
+            "id": "q4",
+            "requirement_ids": [
+              "r2"
+            ],
+            "category": "technical",
+            "prompt": "Explain the difference between 'nn.Module' and 'nn.Sequential' in PyTorch.",
+            "difficulty": 2,
+            "answer_outline": "nn.Module is the base class for all neural network modules; nn.Sequential is a container that chains modules in the order they are passed."
+          },
+          {
+            "id": "q5",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "technical",
+            "prompt": "What is the role of the GPU in CUDA programming, and how does it differ from CPU processing?",
+            "answer_outline": "GPUs are designed for massive parallelism, handling thousands of threads simultaneously for data-intensive tasks, whereas CPUs are optimized for serial processing.",
+            "difficulty": 3
+          },
+          {
+            "id": "q6",
+            "requirement_ids": [
+              "r3"
+            ],
+            "category": "technical",
+            "prompt": "What is a CUDA kernel, and how is it executed?",
+            "answer_outline": "A CUDA kernel is a function that executes in parallel across many threads on the GPU. It is launched from the host (CPU) and executed on the device (GPU).",
+            "difficulty": 3
+          }
+        ],
+        "flashcards": [
+          {
+            "id": "f1",
+            "front": "What is the primary difference between a Python list and a tuple?",
+            "back": "Lists are mutable (can be changed), while tuples are immutable (cannot be changed after creation).",
+            "requirement_ids": [
+              "r1"
+            ]
+          },
+          {
+            "id": "f2",
+            "front": "What does PyTorch's 'tensor.backward()' method do?",
+            "back": "It computes the gradient of the tensor with respect to all leaf nodes in the computational graph using backpropagation.",
+            "requirement_ids": [
+              "r2"
+            ]
+          },
+          {
+            "id": "f3",
+            "front": "In CUDA, what is the difference between the 'host' and the 'device'?",
+            "back": "The host is the CPU and its memory, while the device is the GPU and its dedicated video memory.",
+            "requirement_ids": [
+              "r3"
+            ]
+          }
+        ],
+        "schedule": {
+          "days_available": 60,
+          "days": [
+            {
+              "day": 1,
+              "focus": "Python",
+              "question_ids": [
+                "q2"
+              ],
+              "minutes": 45
+            },
+            {
+              "day": 2,
+              "focus": "PyTorch",
+              "question_ids": [
+                "q3"
+              ],
+              "minutes": 45
+            },
+            {
+              "day": 3,
+              "focus": "CUDA",
+              "question_ids": [
+                "q5"
+              ],
+              "minutes": 45
+            },
+            {
+              "day": 4,
+              "focus": "CUDA",
+              "question_ids": [
+                "q6"
+              ],
+              "minutes": 45
+            },
+            {
+              "day": 5,
+              "focus": "Python",
+              "question_ids": [
+                "q1"
+              ],
+              "minutes": 30
+            },
+            {
+              "day": 6,
+              "focus": "PyTorch",
+              "question_ids": [
+                "q4"
+              ],
+              "minutes": 30
+            },
+            {
+              "day": 7,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 8,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 9,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 10,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 11,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 12,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 13,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 14,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 15,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 16,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 17,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 18,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 19,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 20,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 21,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 22,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 23,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 24,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 25,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 26,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 27,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 28,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 29,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 30,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 31,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 32,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 33,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 34,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 35,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 36,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 37,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 38,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 39,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 40,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 41,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 42,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 43,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 44,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 45,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 46,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 47,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 48,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 49,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 50,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 51,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 52,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 53,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 54,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 55,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 56,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 57,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 58,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 59,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            },
+            {
+              "day": 60,
+              "focus": "Rest and Review",
+              "question_ids": [],
+              "minutes": 0
+            }
+          ]
+        },
+        "coverage": {
+          "uncovered_requirement_ids": [],
+          "passes": 1
+        }
+      },
+      "error": null
     }
   ]
 }

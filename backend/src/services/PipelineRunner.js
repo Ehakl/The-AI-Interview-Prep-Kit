@@ -26,21 +26,52 @@ class PipelineRunner {
     const crawlData = await this.crawler.crawlCompany(companyUrl);
     
     // 2. Extract
-    const extraction = await this.llm.extractRequirements(jobDescription, crawlData.content);
+    let extraction;
+    if (jobDescription.trim().length < 50) {
+      extraction = {
+        is_valid: false,
+        validation_message: "The job description is too short (under 50 characters). Please provide a real job posting.",
+        role: { title: "Invalid Job Description", seniority: "", responsibilities: [] },
+        company_brief: { summary: "No valid job description provided.", what_they_do: "" },
+        requirements: []
+      };
+    } else {
+      extraction = await this.llm.extractRequirements(jobDescription, crawlData.content);
+    }
+
     const requirements = extraction.requirements || [];
-    
-    // 3. Draft Questions (Pass 1 - Per Category)
     let questions = [];
     let flashcards = [];
-    const categories = ["technical", "behavioural", "system-design", "company-fit"];
-    
-    for (const cat of categories) {
-      try {
-        const draft = await this.llm.generateQuestionsForCategory(requirements, cat);
-        if (draft.questions) questions.push(...draft.questions);
-        if (draft.flashcards) flashcards.push(...draft.flashcards);
-      } catch (e) {
-        console.error(`[PipelineRunner] Failed generation for category ${cat}:`, e.message);
+
+    if (extraction.is_valid === false) {
+      // Produce a minimal kit with a warning
+      questions.push({
+        id: `warning-q-1`,
+        requirement_ids: [],
+        category: 'company-fit',
+        prompt: `Notice: Job Description Invalid`,
+        answer_outline: extraction.validation_message || `The provided text did not look like a real job description. We produced this minimal kit. Please try again with a real job posting.`,
+        difficulty: 1
+      });
+      flashcards.push({
+        id: `warning-f-1`,
+        requirement_ids: [],
+        front: `Notice: Invalid Job Description`,
+        back: extraction.validation_message || `Please provide a real job description for a personalized study plan.`,
+        confidence_score: 0
+      });
+    } else {
+      // 3. Draft Questions (Pass 1 - Per Category)
+      const categories = ["technical", "behavioural", "system-design", "company-fit"];
+      
+      for (const cat of categories) {
+        try {
+          const draft = await this.llm.generateQuestionsForCategory(requirements, cat);
+          if (draft.questions) questions.push(...draft.questions);
+          if (draft.flashcards) flashcards.push(...draft.flashcards);
+        } catch (e) {
+          console.error(`[PipelineRunner] Failed generation for category ${cat}:`, e.message);
+        }
       }
     }
 

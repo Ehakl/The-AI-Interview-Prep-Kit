@@ -10,10 +10,20 @@ const nextConfig: NextConfig = {
       ? "https://the-ai-interview-prep-kit-teow.onrender.com/api" 
       : "http://localhost:4000/api";
 
+    let backendUrl = process.env.BACKEND_API_URL || defaultBackend;
+    // Strip trailing slash
+    if (backendUrl.endsWith('/')) {
+      backendUrl = backendUrl.slice(0, -1);
+    }
+    // Ensure it ends with /api
+    if (!backendUrl.endsWith('/api')) {
+      backendUrl = `${backendUrl}/api`;
+    }
+
     return [
       {
         source: "/api/:path*",
-        destination: `${process.env.BACKEND_API_URL || defaultBackend}/:path*`,
+        destination: `${backendUrl}/:path*`,
       },
     ];
   },

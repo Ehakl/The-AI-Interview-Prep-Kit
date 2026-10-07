@@ -151,7 +151,7 @@ function HomeForm() {
               </div>
               <div className="space-y-2">
                 <label htmlFor="days-available" className="text-sm font-medium text-gray-300">Days Until Interview</label>
-                <input id="days-available" type="number" min="1" max="30" className="input-field" value={days} onChange={e => setDays(Math.max(1, parseInt(e.target.value) || 1))} required />
+                <input id="days-available" type="number" min="1" max="60" className="input-field" value={days} onChange={e => setDays(Math.max(1, parseInt(e.target.value) || 1))} required />
               </div>
             </div>
             <div className="space-y-2">

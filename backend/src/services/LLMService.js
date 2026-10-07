@@ -153,10 +153,13 @@ class LLMService {
   async extractRequirements(jobDescription, crawledContext) {
     const prompt = `
       You are an expert technical recruiter. Analyze the following Job Description and Company Context.
-      Extract the job requirements. Differentiate cleanly between "must" (required) and "nice" (bonus).
+      First, validate if the Job Description looks like a real, plausible job posting. If it consists of random gibberish (e.g. "hwwkjwbdkwjdsw"), set is_valid to false and provide a validation_message explaining why.
+      If it is valid, extract the job requirements. Differentiate cleanly between "must" (required) and "nice" (bonus).
       If the job description is a short stub, do not invent requirements. Return an empty structure if insufficient details.
       Output STRICT JSON matching this schema exactly:
       {
+        "is_valid": true,
+        "validation_message": "",
         "role": { "title": "...", "seniority": "...", "responsibilities": ["..."] },
         "company_brief": { "summary": "...", "what_they_do": "..." },
         "requirements": [
