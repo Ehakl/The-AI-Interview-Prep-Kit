@@ -19,11 +19,11 @@ class LLMService {
     if (this.apiKey) {
         this.ai = new GoogleGenAI({ apiKey: this.apiKey });
     }
-    this.model = 'gemini-3.1-flash-lite';
+    this.model = process.env.GEMINI_MODEL || 'gemini-1.5-flash';
   }
 
   // Built-in request back-off for Rate Limiting Resilience (429)
-  async callWithRetry(prompt, retries = 1) {
+  async callWithRetry(prompt, retries = 3) {
     if (!this.apiKey) {
       throw new Error("GEMINI_API_KEY is not set in environment variables.");
     }
@@ -44,6 +44,11 @@ class LLMService {
         
         return JSON.parse(response.text);
       } catch (error) {
+        // Do not retry on client/config errors
+        if (error.status && error.status >= 400 && error.status < 500 && error.status !== 429) {
+          throw new Error(`LLM Configuration Error (${error.status}): Invalid model "${this.model}" or bad request. Details: ${error.message}`);
+        }
+        
         if (error.status === 429 || error.status === 503 || (error.message && (error.message.includes('429') || error.message.includes('503')))) {
           console.warn(`[LLMService] API Overloaded. Retrying attempt ${attempt}/${retries}...`);
           if (attempt === retries) throw new Error(`Google API Error: ${error.message}`);
