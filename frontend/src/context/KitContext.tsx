@@ -266,7 +266,7 @@ export function KitProvider({ children }: { children: ReactNode }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ jd, company_url: companyUrl, days_available: days }),
-      });
+      }, true);
       dispatch({ type: "GENERATION_STEP", payload: "🧠 Extracting requirements..." });
 
       dispatch({ type: "GENERATION_STEP", payload: "✅ Building your kit..." });
@@ -284,7 +284,7 @@ export function KitProvider({ children }: { children: ReactNode }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ requirements, category }),
-      });
+      }, true);
       dispatch({ type: "REGENERATE_CATEGORY_SUCCESS", payload: { category, newQuestions: data.questions } });
     } catch (e: unknown) {
       dispatch({ type: "GENERATION_ERROR", payload: (e as Error).message });

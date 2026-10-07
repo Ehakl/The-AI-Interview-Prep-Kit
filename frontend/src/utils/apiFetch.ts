@@ -10,8 +10,14 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiFetch(endpoint: string, options: RequestInit = {}) {
-  const url = endpoint.startsWith("/api") ? endpoint : `/api${endpoint}`;
+export async function apiFetch(endpoint: string, options: RequestInit = {}, bypassProxy: boolean = false) {
+  let url = endpoint.startsWith("/api") ? endpoint : `/api${endpoint}`;
+  
+  if (bypassProxy) {
+    const defaultBackend = "https://the-ai-interview-prep-kit-teow.onrender.com/api";
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || defaultBackend;
+    url = `${backendUrl}${endpoint.replace(/^\/api/, "")}`;
+  }
 
   let attempts = 0;
   const maxAttempts = 2; // initial + 1 retry
