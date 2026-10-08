@@ -14,9 +14,17 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}, bypa
   let url = endpoint.startsWith("/api") ? endpoint : `/api${endpoint}`;
   
   if (bypassProxy) {
-    const defaultBackend = "https://the-ai-interview-prep-kit-teow.onrender.com/api";
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || defaultBackend;
-    url = `${backendUrl}${endpoint.replace(/^\/api/, "")}`;
+    const defaultBackend = "https://the-ai-interview-prep-kit-teow.onrender.com";
+    let backendUrl = process.env.NEXT_PUBLIC_API_URL || defaultBackend;
+    // ensure backendUrl does NOT end with /api so we can append it cleanly
+    if (backendUrl.endsWith("/api")) {
+      backendUrl = backendUrl.slice(0, -4);
+    }
+    // ensure endpoint starts with /
+    const safeEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    // clean out any duplicate /api in the endpoint since we will explicitly add it
+    const cleanEndpoint = safeEndpoint.replace(/^\/api/, "");
+    url = `${backendUrl}/api${cleanEndpoint}`;
   }
 
   let attempts = 0;
